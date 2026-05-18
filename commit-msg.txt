@@ -1,0 +1,9 @@
+feat(gateway): enterprise hardening and security subsystems
+
+- Sandbox: Docker and process-isolated tool execution for enhanced security
+- Slash Commands: Session control via /status, /help, /think, /compact, etc
+- DM Policy Engine: Secure ingress with open/closed/pairing modes
+- Doctor CLI: Validates DM policies, API keys, and port collisions
+- Pairing CLI: Manage secure access tokens dynamically
+- Status: Real-time active sessions and device counting
+- Tests: Vitest coverage for sandbox, slash-commands, and send-policy

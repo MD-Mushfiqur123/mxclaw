@@ -1,0 +1,9 @@
+{
+  "name": "deepseek",
+  "version": "0.1.0",
+  "type": "provider",
+  "description": "DeepSeek API provider (V3, R1 reasoner)",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["completion", "streaming", "tools"]
+}

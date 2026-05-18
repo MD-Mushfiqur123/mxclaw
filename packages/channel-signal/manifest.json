@@ -1,0 +1,9 @@
+{
+  "name": "signal",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "Signal channel plugin (signal-cli REST API)",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "groups", "attachments"]
+}

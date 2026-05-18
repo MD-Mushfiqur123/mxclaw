@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MxClaw Docs</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --accent2: #f78166;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --pink: #f778ba;
+    --cyan: #39d353;
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    min-height: 100vh;
+    display: flex;
+  }
+  .sidebar {
+    width: 260px;
+    min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    overflow-y: auto;
+  }
+  .sidebar .logo {
+    padding: 0 20px 20px;
+    font-size: 1.3rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent2), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .sidebar .logo small {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 400;
+    -webkit-text-fill-color: var(--text-dim);
+    color: var(--text-dim);
+    margin-top: 2px;
+  }
+  .sidebar nav a {
+    display: block;
+    padding: 8px 20px;
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar nav a:hover, .sidebar nav a.active {
+    color: var(--text);
+    background: rgba(255,255,255,0.03);
+    border-left-color: var(--accent2);
+  }
+  .sidebar nav a.active { color: var(--accent2); font-weight: 600; }
+  .sidebar .nav-label {
+    padding: 16px 20px 4px;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-dim);
+    font-weight: 600;
+  }
+  .content {
+    flex: 1;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 48px;
+  }
+  h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 8px; }
+  h1 .gradient {
+    background: linear-gradient(135deg, var(--accent2), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .subtitle { color: var(--text-dim); font-size: 1.1rem; margin-bottom: 32px; }
+  h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    margin: 32px 0 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; }
+  p { margin-bottom: 12px; color: var(--text-dim); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    color: var(--accent);
+  }
+  pre {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px;
+    overflow-x: auto;
+    margin: 12px 0;
+    font-size: 0.85rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    line-height: 1.5;
+  }
+  pre code { background: none; padding: 0; color: var(--text); }
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 16px 0;
+  }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    transition: border-color 0.15s;
+  }
+  .card:hover { border-color: var(--accent2); }
+  .card h3 { margin: 0 0 8px; font-size: 1rem; }
+  .card h3 a { color: var(--accent2); }
+  .card p { margin: 0; font-size: 0.85rem; }
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    overflow-x: auto;
+    margin: 16px 0;
+  }
+  .arch-diagram .comment { color: var(--text-dim); }
+  .arch-diagram .gateway { color: var(--accent2); }
+  .arch-diagram .layer { color: var(--accent); }
+  .arch-diagram .arrow { color: var(--text-dim); }
+  .install-steps {
+    counter-reset: step;
+    list-style: none;
+    padding: 0;
+  }
+  .install-steps li {
+    counter-increment: step;
+    padding: 12px 16px 12px 48px;
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+  }
+  .install-steps li::before {
+    content: counter(step);
+    position: absolute;
+    left: 14px;
+    top: 12px;
+    width: 24px;
+    height: 24px;
+    background: var(--accent2);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+  .doc-links { list-style: none; padding: 0; }
+  .doc-links li {
+    padding: 10px 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+  }
+  .doc-links li a {
+    font-weight: 600;
+    font-size: 1rem;
+    display: block;
+  }
+  .doc-links li small {
+    display: block;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin-top: 2px;
+  }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 12px 0;
+  }
+  th {
+    background: var(--surface2);
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+  }
+  td {
+    padding: 8px 14px;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.9rem;
+  }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: 1px solid var(--border);
+  }
+  .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border-color: var(--green); }
+  .badge-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); border-color: var(--yellow); }
+  .badge-red { background: rgba(248,81,73,0.15); color: var(--red); border-color: var(--red); }
+  .badge-blue { background: rgba(88,166,255,0.15); color: var(--accent); border-color: var(--accent); }
+  .badge-purple { background: rgba(188,140,255,0.15); color: var(--purple); border-color: var(--purple); }
+  @media (max-width: 768px) {
+    .sidebar { display: none; }
+    .content { padding: 24px 20px; }
+    .card-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">MxClaw<small>Documentation</small></div>
+  <nav>
+    <a class="active" href="index.html">Home</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="channels.html">Channels</a>
+    <a href="providers.html">Providers</a>
+    <a href="voice.html">Voice</a>
+    <a href="security.html">Security</a>
+    <a href="api.html">API Reference</a>
+    <a href="development.html">Development</a>
+  </nav>
+</div>
+
+<div class="content">
+
+<h1><span class="gradient">MxClaw</span> Docs</h1>
+<p class="subtitle">Local-first personal AI agent gateway — unified inbox & execution engine for 20+ messaging platforms with 18+ LLM providers.</p>
+
+<h2>Overview</h2>
+<p>MxClaw runs on your own machine (macOS, Linux, Windows) as a TypeScript/Node.js service. It acts as a unified inbox and execution engine — connect all your messaging platforms, route messages through AI agents, and give those agents tools to execute commands, browse the web, draw on canvas, and more.</p>
+
+<h2>Architecture</h2>
+<div class="arch-diagram">
+<span class="comment">┌─────────────────────────────────────────────────────────────┐</span>
+<span class="comment">│                     </span><span class="gateway">MxClaw Gateway</span><span class="comment">                              │</span>
+<span class="comment">│                                                              │</span>
+<span class="comment">│  ┌──────────┐  ┌──────────┐  ┌──────────┐  ┌────────────┐ │</span>
+<span class="comment">│  │ Discord  │  │ Telegram │  │  Slack   │  │  WhatsApp  │ │</span>
+<span class="comment">│  └────┬─────┘  └────┬─────┘  └────┬─────┘  └─────┬──────┘ │</span>
+<span class="comment">│       │              │             │              │         │</span>
+<span class="comment">│  ┌────┴──────────────┴─────────────┴──────────────┴──────┐ │</span>
+<span class="comment">│  │              </span><span class="layer">Message Routing Engine</span><span class="comment">                     │</span>
+<span class="comment">│  │  Channel + Sender → Agent binding lookup               │</span>
+<span class="comment">│  │  Session key derivation                                 │</span>
+<span class="comment">│  │  Mention gating & allowlist checks                      │</span>
+<span class="comment">│  └────────────────────────┬───────────────────────────────┘ │</span>
+<span class="comment">│                           │                                  │</span>
+<span class="comment">│  ┌────────────────────────┴───────────────────────────────┐ │</span>
+<span class="comment">│  │              </span><span class="layer">Agent Execution Pipeline</span><span class="comment">                   │</span>
+<span class="comment">│  │  Load JSONL transcript                                  │</span>
+<span class="comment">│  │  Compaction checkpoints                                 │</span>
+<span class="comment">│  │  LLM completion with fallback chain                     │</span>
+<span class="comment">│  │  Tool execution with approval gating                    │</span>
+<span class="comment">│  │  Stream tokens back to channel                          │</span>
+<span class="comment">│  └────────────────────────┬───────────────────────────────┘ │</span>
+<span class="comment">│                           │                                  │</span>
+<span class="comment">│  ┌────────────────────────┴───────────────────────────────┐ │</span>
+<span class="comment">│  │  HTTP API  │  WebSocket  │  Webhooks  │  Control UI    │ │</span>
+<span class="comment">│  └────────────────────────────────────────────────────────┘ │</span>
+<span class="comment">└─────────────────────────────────────────────────────────────┘</span>
+</div>
+
+<h2>Quick Start</h2>
+<ol class="install-steps">
+  <li>
+    <strong>Prerequisites</strong><br>
+    Node.js 22+, pnpm 9. Install pnpm: <code>corepack enable && corepack prepare pnpm@9.15.4 --activate</code>
+  </li>
+  <li>
+    <strong>Clone &amp; Install</strong><br>
+    <code>git clone &lt;repo-url&gt; &amp;&amp; cd mxclaw &amp;&amp; pnpm install</code>
+  </li>
+  <li>
+    <strong>Build</strong><br>
+    <code>pnpm build</code> — compiles all packages via <code>tsc</code>
+  </li>
+  <li>
+    <strong>Setup Wizard</strong><br>
+    <code>pnpm cli setup</code> — interactive 15-provider + 14-channel preset wizard
+  </li>
+  <li>
+    <strong>Start Gateway</strong><br>
+    <code>pnpm cli gateway</code> — runs HTTP/WS server on port 18700
+  </li>
+  <li>
+    <strong>Control UI</strong><br>
+    <code>cd packages/control-ui &amp;&amp; pnpm dev</code> — React 19 + Vite dashboard
+  </li>
+</ol>
+
+<h2>Documentation</h2>
+<div class="card-grid">
+  <div class="card">
+    <h3><a href="getting-started.html">Getting Started</a></h3>
+    <p>Prerequisites, install steps, configuration, first run, adding providers/channels, Control UI access.</p>
+  </div>
+  <div class="card">
+    <h3><a href="architecture.html">Architecture</a></h3>
+    <p>Package structure, data flow, plugin system, gateway pipeline, config loading &amp; hot-reload.</p>
+  </div>
+  <div class="card">
+    <h3><a href="channels.html">Channels</a></h3>
+    <p>All 22 channel plugins with descriptions, config fields, status, and the ChannelPlugin interface.</p>
+  </div>
+  <div class="card">
+    <h3><a href="providers.html">Providers</a></h3>
+    <p>Universal OpenAI-compatible adapter, 17+ provider presets, model catalog, adding new providers.</p>
+  </div>
+  <div class="card">
+    <h3><a href="voice.html">Voice</a></h3>
+    <p>4 voice providers (OpenAI Realtime, ElevenLabs, Gemini Live, System TTS), configuration, push-to-talk.</p>
+  </div>
+  <div class="card">
+    <h3><a href="security.html">Security</a></h3>
+    <p>Secrets vault (AES-256-GCM), webhook verification, rate limiting, approval gating.</p>
+  </div>
+  <div class="card">
+    <h3><a href="api.html">API Reference</a></h3>
+    <p>WebSocket gateway (port 18700), MessageEnvelope format, Control UI API, device pairing protocol.</p>
+  </div>
+  <div class="card">
+    <h3><a href="development.html">Development</a></h3>
+    <p>Monorepo structure, build commands, testing, adding a new package, CI/CD pipeline.</p>
+  </div>
+</div>
+
+<h2>Key Facts</h2>
+<table>
+  <tr><th>Metric</th><th>Value</th></tr>
+  <tr><td>Packages</td><td>22</td></tr>
+  <tr><td>Channel Plugins</td><td>22</td></tr>
+  <tr><td>LLM Provider Presets</td><td>17+</td></tr>
+  <tr><td>Voice Providers</td><td>4</td></tr>
+  <tr><td>Model Catalog</td><td>22+ models</td></tr>
+  <tr><td>Agent Tools</td><td>10+</td></tr>
+  <tr><td>Native Apps</td><td>3 (macOS, iOS, Android)</td></tr>
+  <tr><td>Gateway Port</td><td>18700</td></tr>
+  <tr><td>License</td><td>MIT</td></tr>
+</table>
+
+</div>
+
+</body>
+</html>

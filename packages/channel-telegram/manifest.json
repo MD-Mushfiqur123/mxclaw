@@ -1,0 +1,9 @@
+{
+  "name": "telegram",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "Telegram channel plugin (Bot API)",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "inline", "keyboards", "files"]
+}

@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Reference — MxClaw Docs</title>
+<style>
+  :root { --bg: #0d1117; --surface: #161b22; --surface2: #1c2333; --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --accent2: #f78166; --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff; --pink: #f778ba; --radius: 12px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; display: flex; }
+  .sidebar { width: 260px; min-width: 260px; background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+  .sidebar .logo { padding: 0 20px 20px; font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, var(--accent2), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .sidebar .logo small { display: block; font-size: 0.7rem; font-weight: 400; -webkit-text-fill-color: var(--text-dim); color: var(--text-dim); margin-top: 2px; }
+  .sidebar nav a { display: block; padding: 8px 20px; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; transition: all 0.15s; border-left: 2px solid transparent; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: var(--text); background: rgba(255,255,255,0.03); border-left-color: var(--accent2); }
+  .sidebar nav a.active { color: var(--accent2); font-weight: 600; }
+  .content { flex: 1; max-width: 900px; margin: 0 auto; padding: 40px 48px; }
+  h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 24px; }
+  h2 { font-size: 1.4rem; font-weight: 700; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; }
+  p { margin-bottom: 12px; color: var(--text-dim); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); }
+  pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; line-height: 1.5; }
+  pre code { background: none; padding: 0; color: var(--text); }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 12px 0; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+  td { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  ul, ol { margin: 12px 0; padding-left: 20px; color: var(--text-dim); }
+  li { margin-bottom: 6px; }
+  .endpoint { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; margin: 12px 0; }
+  .endpoint .method { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; font-weight: 700; color: #fff; margin-right: 8px; }
+  .method-get { background: var(--green); }
+  .method-post { background: var(--accent); }
+  .method-put { background: var(--yellow); }
+  .method .path { font-family: 'SF Mono', monospace; }
+  @media (max-width: 768px) { .sidebar { display: none; } .content { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">MxClaw<small>Documentation</small></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="channels.html">Channels</a>
+    <a href="providers.html">Providers</a>
+    <a href="voice.html">Voice</a>
+    <a href="security.html">Security</a>
+    <a class="active" href="api.html">API Reference</a>
+    <a href="development.html">Development</a>
+  </nav>
+</div>
+
+<div class="content">
+
+<h1>API Reference</h1>
+
+<h2>WebSocket Gateway (Port 18700)</h2>
+<p>Clients connect to <code>ws://127.0.0.1:18700</code> and must authenticate within 10 seconds. Authentication uses device tokens (8-char hex device ID + 32-byte random token, separated by <code>:</code>). Tokens rotate on every connect.</p>
+
+<h3>Client → Server Messages</h3>
+<table>
+  <tr><th>Type</th><th>Payload</th><th>Description</th></tr>
+  <tr><td><code>auth</code></td><td><code>{ token: "deviceId:deviceToken" }</code></td><td>Authenticate with device pairing token</td></tr>
+  <tr><td><code>chat:send</code></td><td><code>{ envelope: MessageEnvelope }</code></td><td>Send a chat message</td></tr>
+  <tr><td><code>chat:approve</code></td><td><code>{ approvalId, approved }</code></td><td>Approve or deny a tool request</td></tr>
+  <tr><td><code>canvas:event</code></td><td><code>{ event }</code></td><td>Canvas/A2UI interaction event</td></tr>
+  <tr><td><code>voice:start</code></td><td><code>{}</code></td><td>Start voice session</td></tr>
+  <tr><td><code>voice:stop</code></td><td><code>{}</code></td><td>Stop voice session</td></tr>
+  <tr><td><code>voice:audio</code></td><td><code>{ data: base64 }</code></td><td>Send audio chunk</td></tr>
+  <tr><td><code>presence:update</code></td><td><code>{ status }</code></td><td>Update presence (online/away/offline)</td></tr>
+  <tr><td><code>ping</code></td><td><code>{}</code></td><td>Heartbeat</td></tr>
+</table>
+
+<h3>Server → Client Messages</h3>
+<table>
+  <tr><th>Type</th><th>Payload</th><th>Description</th></tr>
+  <tr><td><code>auth:ok</code></td><td><code>{ deviceId }</code></td><td>Authentication successful</td></tr>
+  <tr><td><code>auth:error</code></td><td><code>{ error }</code></td><td>Authentication failed</td></tr>
+  <tr><td><code>chat:token</code></td><td><code>{ token, conversationId, messageId }</code></td><td>Streaming response token</td></tr>
+  <tr><td><code>chat:done</code></td><td><code>{ conversationId, messageId, fullText }</code></td><td>Response complete</td></tr>
+  <tr><td><code>chat:error</code></td><td><code>{ conversationId, error }</code></td><td>Response error</td></tr>
+  <tr><td><code>approval:required</code></td><td><code>{ approvalId, tool, args, agentId }</code></td><td>Tool needs approval</td></tr>
+  <tr><td><code>canvas:update</code></td><td><code>{ json }</code></td><td>Canvas state update</td></tr>
+  <tr><td><code>voice:token</code></td><td><code>{ token: sessionId }</code></td><td>Voice session started</td></tr>
+  <tr><td><code>voice:error</code></td><td><code>{ error }</code></td><td>Voice session error</td></tr>
+  <tr><td><code>presence:update</code></td><td><code>{ deviceId, status }</code></td><td>Presence changed</td></tr>
+  <tr><td><code>status:update</code></td><td><code>{ status: GatewayStatus }</code></td><td>Gateway status snapshot</td></tr>
+  <tr><td><code>pong</code></td><td><code>{}</code></td><td>Heartbeat reply</td></tr>
+  <tr><td><code>error</code></td><td><code>{ message, code }</code></td><td>Generic error</td></tr>
+</table>
+
+<h2>HTTP API</h2>
+
+<div class="endpoint"><span class="method method-get">GET</span> <code>/health</code> — Health check</div>
+<div class="endpoint"><span class="method method-get">GET</span> <code>/status</code> — Full gateway status (channels, providers, sessions, memory)</div>
+
+<h3>Config</h3>
+<div class="endpoint"><span class="method method-get">GET</span> <code>/api/config</code> — Get current config (redacted secrets)</div>
+<div class="endpoint"><span class="method method-put">PUT</span> <code>/api/config</code> — Update config (triggers hot-reload)</div>
+
+<h3>Sessions</h3>
+<div class="endpoint"><span class="method method-get">GET</span> <code>/api/sessions?agentId=default</code> — List sessions</div>
+<div class="endpoint"><span class="method method-get">GET</span> <code>/api/session/transcript?agentId=default&amp;sessionKey=...</code> — Get transcript</div>
+<div class="endpoint"><span class="method method-post">POST</span> <code>/api/session/reset</code> — Reset a session</div>
+
+<h3>Approvals</h3>
+<div class="endpoint"><span class="method method-get">GET</span> <code>/api/approvals</code> — List pending approvals</div>
+<div class="endpoint"><span class="method method-post">POST</span> <code>/api/approval/resolve</code> — Approve/deny</div>
+
+<h3>Pairing &amp; Devices</h3>
+<div class="endpoint"><span class="method method-post">POST</span> <code>/api/pairing/generate</code> — Generate pairing code</div>
+<div class="endpoint"><span class="method method-post">POST</span> <code>/api/pairing/validate</code> — Validate pairing code</div>
+<div class="endpoint"><span class="method method-post">POST</span> <code>/api/devices/pair</code> — Pair a device</div>
+
+<h3>Chat</h3>
+<div class="endpoint"><span class="method method-post">POST</span> <code>/api/chat/send</code> — Send a chat message (accepts MessageEnvelope)</div>
+
+<h3>Skills</h3>
+<div class="endpoint"><span class="method method-get">GET</span> <code>/api/skills</code> — List loaded skills</div>
+<div class="endpoint"><span class="method method-post">POST</span> <code>/api/skills/toggle</code> — Enable/disable a skill</div>
+
+<h3>Models</h3>
+<div class="endpoint"><span class="method method-get">GET</span> <code>/api/models</code> — List all models in catalog</div>
+
+<h3>Tokens</h3>
+<div class="endpoint"><span class="method method-post">POST</span> <code>/api/token/generate</code> — Generate API token</div>
+
+<h3>Webhooks</h3>
+<div class="endpoint"><span class="method method-post">POST</span> <code>/gateway/webhook/:platform</code> — Inbound webhook endpoint (signature verified)</div>
+
+<h2>MessageEnvelope Format</h2>
+<pre><code>{
+  "id": "uuid",
+  "channel": "discord-1",
+  "channelType": "discord",
+  "sender": { "id": "user123", "displayName": "Alice", "avatarUrl": "...", "isBot": false },
+  "conversationId": "chan-123",
+  "threadId": "thread-456",
+  "content": [
+    { "type": "text", "text": "Hello!" },
+    { "type": "image", "url": "https://...", "alt": "photo" }
+  ],
+  "mentions": ["bot"],
+  "isGroupMessage": false,
+  "isMentioned": true,
+  "timestamp": 1712345678000,
+  "metadata": {}
+}</code></pre>
+
+<h2>Control UI API</h2>
+<p>The Control UI (React 19 + Zustand 5 + Vite 6) communicates with the gateway via both HTTP and WebSocket. It has 10 pages:</p>
+<table>
+  <tr><th>Page</th><th>Description</th><th>Data Source</th></tr>
+  <tr><td>Dashboard</td><td>Overview stats, channel health, provider status</td><td><code>/status</code> + WS <code>status:update</code></td></tr>
+  <tr><td>Chat</td><td>Send messages, view streaming responses</td><td>WS <code>chat:send</code>, <code>chat:token</code></td></tr>
+  <tr><td>Channels</td><td>List, add, configure channel plugins</td><td><code>GET /api/config</code> + WS</td></tr>
+  <tr><td>Sessions</td><td>View transcripts, reset sessions</td><td><code>/api/sessions</code>, <code>/api/session/transcript</code></td></tr>
+  <tr><td>Approvals</td><td>Review and resolve pending approvals</td><td><code>/api/approvals</code>, WS <code>approval:required</code></td></tr>
+  <tr><td>Skills</td><td>List, toggle skills</td><td><code>/api/skills</code></td></tr>
+  <tr><td>Memory</td><td>Knowledge base CRUD</td><td><code>/api/*</code> endpoints</td></tr>
+  <tr><td>Providers</td><td>Health checks + model catalog browser</td><td><code>/api/models</code></td></tr>
+  <tr><td>Voice</td><td>4-provider voice config</td><td><code>GET /api/config</code></td></tr>
+  <tr><td>Config</td><td>View/edit raw config JSON</td><td><code>GET/PUT /api/config</code></td></tr>
+</table>
+
+<h2>Device Pairing Protocol</h2>
+<ol>
+  <li>Channel receives message from unknown sender → <code>generatePairingCode(channelId, senderId)</code></li>
+  <li>8-char hex code sent back to sender via channel</li>
+  <li>Sender enters code in Control UI → <code>POST /api/pairing/validate</code></li>
+  <li>On success, <code>POST /api/devices/pair</code> creates a device session with a 32-byte token</li>
+  <li>Token used for WebSocket auth: <code>{ type: "auth", token: "deviceId:deviceToken" }</code></li>
+  <li>Token rotates automatically on each connect via <code>rotateDeviceToken()</code></li>
+</ol>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "name": "discord",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "Discord channel plugin (WebSocket intents)",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "reactions", "attachments", "threads"]
+}

@@ -1,0 +1,16 @@
+node_modules
+src
+tsconfig.json
+tsconfig.tsbuildinfo
+*.test.ts
+vitest.config.ts
+pnpm-lock.yaml
+pnpm-workspace.yaml
+apps
+-p
+.git
+.github
+.vscode
+*.log
+.env
+.env.*

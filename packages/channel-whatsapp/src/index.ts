@@ -1,0 +1,187 @@
+// @ts-nocheck
+import type {
+  ChannelPlugin, ChannelConfig, MessageEnvelope, ReplyEnvelope,
+  ChannelStatus, PluginManifest,
+} from "@mxclaw/core";
+import { v4 as uuidv4 } from "uuid";
+import * as fs from "node:fs";
+import * as path from "node:path";
+import * as os from "node:os";
+
+const manifest: PluginManifest = {
+  name: "whatsapp", version: "0.1.0", type: "channel",
+  description: "WhatsApp channel plugin (Baileys WebSocket with QR auth)", author: "MxClaw",
+  main: "dist/index.js", capabilities: ["sendMessage", "receiveMessage", "media", "groups", "qr-auth"],
+};
+
+interface WAState {
+  sock: unknown; connected: boolean; messageCount: number; queue: ReplyEnvelope[];
+  qrCode: string | null; authDir: string;
+  onMessage?: (env: MessageEnvelope) => Promise<void>;
+  reconnectTimer: ReturnType<typeof setTimeout> | null;
+  reconnectAttempts: number;
+}
+const states = new Map<string, WAState>();
+
+function getState(id: string): WAState {
+  let s = states.get(id);
+  if (!s) {
+    s = {
+      sock: null, connected: false, messageCount: 0, queue: [],
+      qrCode: null, authDir: path.join(os.homedir(), ".mxclaw", "wa-auth", id),
+      reconnectTimer: null, reconnectAttempts: 0,
+    };
+    states.set(id, s);
+  }
+  return s;
+}
+
+async function initBaileys(state: WAState, config: ChannelConfig, onMessage: (env: MessageEnvelope) => Promise<void>): Promise<void> {
+  try {
+    const { makeWASocket, useMultiFileAuthState, DisconnectReason, fetchLatestBaileysVersion } = await import("@whiskeysockets/baileys");
+    const { Boom } = await import("@hapi/boom");
+    const pino = (await import("pino")).default;
+
+    fs.mkdirSync(state.authDir, { recursive: true });
+    const { state: authState, saveCreds } = await useMultiFileAuthState(state.authDir);
+    const { version } = await fetchLatestBaileysVersion();
+
+    const sock = makeWASocket({
+      version,
+      auth: authState,
+      printQRInTerminal: false,
+      logger: pino({ level: "silent" }),
+      browser: ["MxClaw", "Desktop", "1.0.0"],
+      markOnlineOnConnect: true,
+      syncFullHistory: false,
+    });
+
+    state.sock = sock;
+
+    sock.ev.on("creds.update", saveCreds);
+
+    sock.ev.on("connection.update", (update: Record<string, unknown>) => {
+      const { connection, lastDisconnect, qr } = update;
+      if (qr) {
+        state.qrCode = qr as string;
+        console.log(`[whatsapp:${config.id}] QR Code received — scan with WhatsApp`);
+      }
+      if (connection === "open") {
+        state.connected = true;
+        state.reconnectAttempts = 0;
+        state.qrCode = null;
+        console.log(`[whatsapp:${config.id}] Connected to WhatsApp`);
+        flushQueue(config.id, state);
+      }
+      if (connection === "close") {
+        state.connected = false;
+        const shouldReconnect = (lastDisconnect as { error?: { output?: { statusCode: number } } })?.error?.output?.statusCode !== DisconnectReason.loggedOut;
+        if (shouldReconnect) {
+          const delay = Math.min(1000 * Math.pow(2, state.reconnectAttempts) + Math.random() * 1000, 30000);
+          state.reconnectAttempts++;
+          console.log(`[whatsapp:${config.id}] Reconnecting in ${Math.round(delay / 1000)}s (attempt ${state.reconnectAttempts})`);
+          state.reconnectTimer = setTimeout(() => initBaileys(state, config, onMessage), delay);
+        } else {
+          console.log(`[whatsapp:${config.id}] Logged out — delete ${state.authDir} to re-auth`);
+        }
+      }
+    });
+
+    sock.ev.on("messages.upsert", (m: { messages: Array<Record<string, unknown>>; type: string }) => {
+      if (m.type !== "notify") return;
+      for (const msg of m.messages) {
+        const key = msg.key as Record<string, unknown> | undefined;
+        if (key?.fromMe) continue;
+        const messageContent = msg.message as Record<string, unknown> | undefined;
+        if (!messageContent) continue;
+
+        let text = "";
+        if (messageContent.conversation) text = messageContent.conversation as string;
+        else if (messageContent.extendedTextMessage) text = (messageContent.extendedTextMessage as Record<string, unknown>).text as string ?? "";
+        else if (messageContent.imageMessage) text = (messageContent.imageMessage as Record<string, unknown>).caption as string ?? "[Image]";
+        else if (messageContent.videoMessage) text = (messageContent.videoMessage as Record<string, unknown>).caption as string ?? "[Video]";
+        else if (messageContent.audioMessage) text = "[Audio]";
+        else if (messageContent.documentMessage) text = "[Document]";
+        else if (messageContent.stickerMessage) text = "[Sticker]";
+        else text = "[Media]";
+
+        const remoteJid = (key?.remoteJid as string) ?? "";
+        const isGroup = remoteJid.endsWith("@g.us");
+        const pushName = (msg.pushName as string) ?? "Unknown";
+
+        const envelope: MessageEnvelope = {
+          id: (key?.id as string) ?? uuidv4(),
+          channel: config.id, channelType: "whatsapp",
+          sender: { id: (key?.participant as string) ?? (key?.remoteJid as string) ?? "unknown", displayName: pushName, isBot: false },
+          conversationId: remoteJid,
+          content: [{ type: "text", text }],
+          mentions: [],
+          isGroupMessage: isGroup,
+          isMentioned: text.includes("@everyone") || false,
+          timestamp: (msg.messageTimestamp as number) * 1000 ?? Date.now(), metadata: {},
+        };
+        state.messageCount++;
+        state.onMessage?.(envelope);
+      }
+    });
+  } catch (err) {
+    console.error(`[whatsapp:${config.id}] Baileys init failed:`, err);
+    console.log(`[whatsapp:${config.id}] Install with: pnpm add @whiskeysockets/baileys @hapi/boom pino`);
+    state.connected = false;
+  }
+}
+
+async function flushQueue(channelId: string, state: WAState): Promise<void> {
+  while (state.queue.length > 0) {
+    const reply = state.queue.shift();
+    if (reply) {
+      try {
+        await plugin.sendMessage(channelId, reply);
+      } catch {
+        state.queue.unshift(reply);
+        break;
+      }
+    }
+  }
+}
+
+const plugin: ChannelPlugin = {
+  manifest,
+  setupChannel: async (config) => {
+    const state = getState(config.id);
+    fs.mkdirSync(state.authDir, { recursive: true });
+  },
+  startChannel: async (config, onMessage) => {
+    const state = getState(config.id);
+    state.onMessage = onMessage;
+    await initBaileys(state, config, onMessage);
+  },
+  stopChannel: async (id) => {
+    const s = states.get(id); if (!s) return;
+    if (s.reconnectTimer) clearTimeout(s.reconnectTimer);
+    const sock = s.sock as { end?: (reason: unknown) => void; logout?: () => Promise<void> } | null;
+    if (sock?.end) sock.end(undefined);
+    s.connected = false; states.delete(id);
+  },
+  sendMessage: async (id, reply) => {
+    const s = states.get(id); if (!s || !s.connected) { if (s) s.queue.push(reply); return; }
+    const text = reply.content.filter(c => c.type === "text").map(c => c.text).join("\n");
+    if (!text) return;
+    try {
+      const sock = s.sock as { sendMessage: (jid: string, content: Record<string, unknown>) => Promise<unknown> };
+      await sock.sendMessage(reply.conversationId, { text });
+    } catch { s.queue.push(reply); }
+  },
+  handleCommand: async () => {},
+  handleApproval: async () => {},
+  getStatus: async (id) => {
+    const s = states.get(id);
+    return {
+      id, type: "whatsapp", connected: s?.connected ?? false,
+      messageCount: s?.messageCount ?? 0, queueSize: s?.queue.length ?? 0,
+      error: s?.qrCode ? `QR Code available for scanning` : undefined,
+    };
+  },
+};
+
+export default plugin;

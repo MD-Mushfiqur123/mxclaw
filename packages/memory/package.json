@@ -1,0 +1,27 @@
+{
+  "name": "@mxclaw/memory",
+  "version": "0.1.0",
+  "description": "mxclaw memory/knowledge base: store, search, recall, forget for agent knowledge",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@mxclaw/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "rimraf": "^6.0.0",
+    "typescript": "^5.7.0"
+  }
+}

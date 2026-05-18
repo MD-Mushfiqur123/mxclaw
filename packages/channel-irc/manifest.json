@@ -1,0 +1,9 @@
+{
+  "name": "irc",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "IRC channel plugin",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "channels", "pm"]
+}

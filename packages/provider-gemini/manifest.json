@@ -1,0 +1,9 @@
+{
+  "name": "gemini",
+  "version": "0.1.0",
+  "type": "provider",
+  "description": "Google Gemini API provider",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["completion", "streaming", "tools", "vision"]
+}

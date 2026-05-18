@@ -1,0 +1,30 @@
+{
+  "name": "@mxclaw/security",
+  "version": "0.1.0",
+  "description": "mxclaw security: pairing codes, allowlists, mention gating, device pairing, token rotation",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./secrets": {
+      "import": "./dist/secrets.js",
+      "types": "./dist/secrets.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@mxclaw/core": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.0",
+    "typescript": "^5.7.0"
+  }
+}

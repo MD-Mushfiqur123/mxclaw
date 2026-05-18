@@ -1,0 +1,39 @@
+{
+  "name": "@mxclaw/cli",
+  "version": "0.1.0",
+  "description": "MxClaw CLI - local-first AI agent gateway for 20+ messaging platforms",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "mxclaw": "./dist/index.js"
+  },
+  "exports": {
+    ".": { "import": "./dist/index.js", "types": "./dist/index.d.ts" }
+  },
+  "files": [
+    "dist/**"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "keywords": [
+    "mxclaw", "ai-agent", "llm-gateway", "chatbot", "cli",
+    "discord-bot", "telegram-bot", "slack-bot", "openai", "anthropic"
+  ],
+  "author": "MxClaw",
+  "license": "MIT",
+  "dependencies": {
+    "@mxclaw/core": "workspace:*",
+    "@mxclaw/gateway": "workspace:*",
+    "@mxclaw/plugin-system": "workspace:*",
+    "@mxclaw/storage": "workspace:*",
+    "@mxclaw/logging": "workspace:*",
+    "commander": "^13.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.0",
+    "typescript": "^5.7.0"
+  }
+}

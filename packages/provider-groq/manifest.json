@@ -1,0 +1,9 @@
+{
+  "name": "groq",
+  "version": "0.1.0",
+  "type": "provider",
+  "description": "Groq inference provider (Llama 3.3, Mixtral)",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["completion", "streaming", "tools"]
+}

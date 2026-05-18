@@ -1,0 +1,9 @@
+{
+  "name": "line",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "LINE Messaging API channel plugin",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "flexMessages", "stickers"]
+}

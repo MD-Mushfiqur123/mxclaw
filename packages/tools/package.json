@@ -1,0 +1,29 @@
+{
+  "name": "@mxclaw/tools",
+  "version": "0.1.0",
+  "description": "mxclaw agent tools: bash, browser CDP, canvas, cron, session spawn, image gen, file r/w",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "zod": "^3.23.0",
+    "@mxclaw/core": "workspace:*",
+    "@mxclaw/security": "workspace:*",
+    "@mxclaw/memory": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.0",
+    "typescript": "^5.7.0"
+  }
+}

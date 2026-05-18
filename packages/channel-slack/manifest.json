@@ -1,0 +1,9 @@
+{
+  "name": "slack",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "Slack channel plugin (Events API + Socket Mode)",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "reactions", "threads", "blocks"]
+}

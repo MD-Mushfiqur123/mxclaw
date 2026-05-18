@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Providers — MxClaw Docs</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #1c2333; --border: #30363d;
+    --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --accent2: #f78166;
+    --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff; --pink: #f778ba;
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; display: flex; }
+  .sidebar { width: 260px; min-width: 260px; background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+  .sidebar .logo { padding: 0 20px 20px; font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, var(--accent2), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .sidebar .logo small { display: block; font-size: 0.7rem; font-weight: 400; -webkit-text-fill-color: var(--text-dim); color: var(--text-dim); margin-top: 2px; }
+  .sidebar nav a { display: block; padding: 8px 20px; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; transition: all 0.15s; border-left: 2px solid transparent; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: var(--text); background: rgba(255,255,255,0.03); border-left-color: var(--accent2); }
+  .sidebar nav a.active { color: var(--accent2); font-weight: 600; }
+  .content { flex: 1; max-width: 900px; margin: 0 auto; padding: 40px 48px; }
+  h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 24px; }
+  h2 { font-size: 1.4rem; font-weight: 700; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; }
+  p { margin-bottom: 12px; color: var(--text-dim); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); }
+  pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; line-height: 1.5; }
+  pre code { background: none; padding: 0; color: var(--text); }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 12px 0; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+  td { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  ul, ol { margin: 12px 0; padding-left: 20px; color: var(--text-dim); }
+  li { margin-bottom: 6px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--border); }
+  .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border-color: var(--green); }
+  .badge-blue { background: rgba(88,166,255,0.15); color: var(--accent); border-color: var(--accent); }
+  .badge-purple { background: rgba(188,140,255,0.15); color: var(--purple); border-color: var(--purple); }
+  .badge-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); border-color: var(--yellow); }
+  @media (max-width: 768px) { .sidebar { display: none; } .content { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">MxClaw<small>Documentation</small></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="channels.html">Channels</a>
+    <a class="active" href="providers.html">Providers</a>
+    <a href="voice.html">Voice</a>
+    <a href="security.html">Security</a>
+    <a href="api.html">API Reference</a>
+    <a href="development.html">Development</a>
+  </nav>
+</div>
+
+<div class="content">
+
+<h1>Providers</h1>
+<p>MxClaw uses a <strong>universal OpenAI-compatible adapter</strong> pattern — one adapter covers 17+ providers. Any provider that follows the OpenAI chat completions API works out of the box.</p>
+
+<h2>Provider Presets</h2>
+<p>The universal adapter in <code>provider-openai-compatible</code> defines these presets:</p>
+<table>
+  <tr><th>Preset Name</th><th>Base URL</th><th>Env Key</th><th>Default Model</th></tr>
+  <tr><td><code>openai</code></td><td>api.openai.com/v1</td><td>OPENAI_API_KEY</td><td>gpt-4o</td></tr>
+  <tr><td><code>anthropic</code></td><td>api.anthropic.com/v1</td><td>ANTHROPIC_API_KEY</td><td>claude-sonnet-4-20250514</td></tr>
+  <tr><td><code>groq</code></td><td>api.groq.com/openai/v1</td><td>GROQ_API_KEY</td><td>llama-3.3-70b-versatile</td></tr>
+  <tr><td><code>deepseek</code></td><td>api.deepseek.com/v1</td><td>DEEPSEEK_API_KEY</td><td>deepseek-chat</td></tr>
+  <tr><td><code>together</code></td><td>api.together.xyz/v1</td><td>TOGETHER_API_KEY</td><td>Llama-3.3-70B-Instruct-Turbo</td></tr>
+  <tr><td><code>fireworks</code></td><td>api.fireworks.ai/inference/v1</td><td>FIREWORKS_API_KEY</td><td>llama-v3p3-70b-instruct</td></tr>
+  <tr><td><code>xai</code></td><td>api.x.ai/v1</td><td>XAI_API_KEY</td><td>grok-3</td></tr>
+  <tr><td><code>perplexity</code></td><td>api.perplexity.ai</td><td>PERPLEXITY_API_KEY</td><td>sonar-pro</td></tr>
+  <tr><td><code>mistral</code></td><td>api.mistral.ai/v1</td><td>MISTRAL_API_KEY</td><td>mistral-large-latest</td></tr>
+  <tr><td><code>openrouter</code></td><td>openrouter.ai/api/v1</td><td>OPENROUTER_API_KEY</td><td>openai/gpt-4o</td></tr>
+  <tr><td><code>requesty</code></td><td>router.requesty.ai/v1</td><td>REQUESTY_API_KEY</td><td>gpt-4o</td></tr>
+  <tr><td><code>huggingface</code></td><td>api-inference.huggingface.co</td><td>HF_API_KEY</td><td>Llama-3.3-70B-Instruct</td></tr>
+  <tr><td><code>azure</code></td><td>Custom</td><td>AZURE_OPENAI_API_KEY</td><td>gpt-4o</td></tr>
+  <tr><td><code>ollama</code></td><td>localhost:11434/v1</td><td>—</td><td>llama3.2</td></tr>
+  <tr><td><code>lmstudio</code></td><td>localhost:1234/v1</td><td>—</td><td>local-model</td></tr>
+  <tr><td><code>vllm</code></td><td>localhost:8000/v1</td><td>—</td><td>default</td></tr>
+  <tr><td><code>localai</code></td><td>localhost:8080/v1</td><td>—</td><td>gpt-4</td></tr>
+  <tr><td><code>textgen</code></td><td>localhost:5000/v1</td><td>—</td><td>default</td></tr>
+  <tr><td><code>custom</code></td><td>Custom</td><td>—</td><td>default</td></tr>
+</table>
+
+<p>Additionally, dedicated standalone provider packages exist for specialized integrations:</p>
+<ul>
+  <li><strong>AWS Bedrock</strong> — Custom SigV4 signing implementation</li>
+  <li><strong>Anthropic</strong> — Native Anthropic API client</li>
+  <li><strong>OpenAI</strong> — Native OpenAI SDK client</li>
+  <li><strong>Google Gemini</strong> — Google AI SDK integration</li>
+  <li><strong>Azure</strong> — Azure OpenAI endpoint</li>
+  <li><strong>Cloudflare</strong> — Cloudflare Workers AI</li>
+  <li><strong>Cohere</strong> — Cohere API</li>
+  <li><strong>Replicate</strong> — Replicate API</li>
+</ul>
+
+<h2>ProviderPlugin Interface</h2>
+<pre><code>interface ProviderPlugin {
+  manifest: PluginManifest;
+  initialize: (config: Record&lt;string, unknown&gt;) =&gt; Promise&lt;void&gt;;
+  complete: (request: LLMCompletionRequest) =&gt; Promise&lt;LLMCompletionResponse&gt;;
+  completeStream: (request: LLMCompletionRequest) =&gt; AsyncGenerator&lt;LLMCompletionChunk&gt;;
+  listModels: () =&gt; Promise&lt;Array&lt;{ id: string; name: string }&gt;&gt;;
+  healthCheck: () =&gt; Promise&lt;boolean&gt;;
+}</code></pre>
+
+<h2>Model Catalog</h2>
+<p>The model catalog in <code>gateway/src/model-catalog.ts</code> pre-seeds known capabilities for 22+ models:</p>
+<table>
+  <tr><th>Model ID</th><th>Provider</th><th>Context</th><th>Vision</th><th>Tools</th><th>Price (In/Out per 1M)</th></tr>
+  <tr><td>gpt-4.1</td><td>OpenAI</td><td>1,047,576</td><td>✓</td><td>✓</td><td>$2 / $8</td></tr>
+  <tr><td>gpt-4.1-mini</td><td>OpenAI</td><td>1,047,576</td><td>✓</td><td>✓</td><td>$0.40 / $1.60</td></tr>
+  <tr><td>gpt-4.1-nano</td><td>OpenAI</td><td>1,047,576</td><td>✓</td><td>✓</td><td>$0.10 / $0.40</td></tr>
+  <tr><td>gpt-4o</td><td>OpenAI</td><td>128,000</td><td>✓</td><td>✓</td><td>$2.50 / $10</td></tr>
+  <tr><td>gpt-4o-mini</td><td>OpenAI</td><td>128,000</td><td>✓</td><td>✓</td><td>$0.15 / $0.60</td></tr>
+  <tr><td>o3</td><td>OpenAI</td><td>200,000</td><td>✓</td><td>✓</td><td>$10 / $40</td></tr>
+  <tr><td>o4-mini</td><td>OpenAI</td><td>200,000</td><td>✓</td><td>✓</td><td>$1.10 / $4.40</td></tr>
+  <tr><td>claude-opus-4</td><td>Anthropic</td><td>200,000</td><td>✓</td><td>✓</td><td>$15 / $75</td></tr>
+  <tr><td>claude-sonnet-4</td><td>Anthropic</td><td>200,000</td><td>✓</td><td>✓</td><td>$3 / $15</td></tr>
+  <tr><td>claude-haiku-4.5</td><td>Anthropic</td><td>200,000</td><td>✓</td><td>✓</td><td>$0.80 / $4</td></tr>
+  <tr><td>gemini-2.5-pro</td><td>Gemini</td><td>1,000,000</td><td>✓</td><td>✓</td><td>$1.25 / $10</td></tr>
+  <tr><td>gemini-2.5-flash</td><td>Gemini</td><td>1,000,000</td><td>✓</td><td>✓</td><td>$0.15 / $0.60</td></tr>
+  <tr><td>deepseek-chat</td><td>DeepSeek</td><td>64,000</td><td>✗</td><td>✓</td><td>$0.27 / $1.10</td></tr>
+  <tr><td>llama-3.3-70b</td><td>Groq</td><td>128,000</td><td>✗</td><td>✓</td><td>$0.59 / $0.79</td></tr>
+  <tr><td>llama-4-scout</td><td>Groq</td><td>131,072</td><td>✓</td><td>✓</td><td>$0.11 / $0.34</td></tr>
+  <tr><td>mistral-large</td><td>Mistral</td><td>128,000</td><td>✗</td><td>✓</td><td>$2 / $6</td></tr>
+  <tr><td>command-a</td><td>Cohere</td><td>256,000</td><td>✗</td><td>✓</td><td>$2.50 / $10</td></tr>
+  <tr><td>grok-3</td><td>xAI</td><td>131,072</td><td>✓</td><td>✓</td><td>$3 / $15</td></tr>
+  <tr><td>sonar-pro</td><td>Perplexity</td><td>200,000</td><td>✗</td><td>✗</td><td>$3 / $15</td></tr>
+  <tr><td>ollama</td><td>Ollama</td><td>128,000</td><td>✓</td><td>✓</td><td>Free (local)</td></tr>
+  <tr><td>lmstudio</td><td>LM Studio</td><td>128,000</td><td>✗</td><td>✓</td><td>Free (local)</td></tr>
+</table>
+
+<h2>Provider Config</h2>
+<p>Configure a provider in your agent's model field:</p>
+<pre><code>{
+  "provider": "openai",
+  "model": "gpt-4o",
+  "apiKey": "$secret:OPENAI_API_KEY",
+  "preset": "openai",
+  "baseUrl": "https://api.openai.com/v1",
+  "temperature": 0.7,
+  "maxTokens": 4096,
+  "modelAliases": { "fast": "gpt-4o-mini" }
+}</code></pre>
+
+<h2>Fallback Chain</h2>
+<p>Agents can define a fallback chain — if the primary provider fails, MxClaw retries with exponential backoff (max 3 retries) across the chain:</p>
+<pre><code>"fallbackChain": [
+  { "provider": "anthropic", "model": "claude-sonnet-4-20250514" },
+  { "provider": "groq", "model": "llama-3.3-70b-versatile" }
+]</code></pre>
+
+<h2>Adding a New Provider</h2>
+<ol>
+  <li>Create <code>packages/provider-&lt;name&gt;/</code> with <code>package.json</code>, <code>tsconfig.json</code>, <code>manifest.json</code>, <code>src/index.ts</code>.</li>
+  <li>Implement the <code>ProviderPlugin</code> interface.</li>
+  <li>If it's OpenAI-compatible, add a preset to <code>provider-openai-compatible/src/index.ts</code> (around line 27).</li>
+  <li>Add model entries to <code>gateway/src/model-catalog.ts</code>.</li>
+  <li>Add to the CLI onboarding wizard.</li>
+</ol>
+
+</div>
+
+</body>
+</html>

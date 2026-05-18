@@ -1,0 +1,9 @@
+{
+  "name": "ollama",
+  "version": "0.1.0",
+  "type": "provider",
+  "description": "Ollama local model provider",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["completion", "streaming"]
+}

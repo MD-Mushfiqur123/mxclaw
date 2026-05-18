@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Development — MxClaw Docs</title>
+<style>
+  :root { --bg: #0d1117; --surface: #161b22; --surface2: #1c2333; --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --accent2: #f78166; --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff; --pink: #f778ba; --radius: 12px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; display: flex; }
+  .sidebar { width: 260px; min-width: 260px; background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+  .sidebar .logo { padding: 0 20px 20px; font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, var(--accent2), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .sidebar .logo small { display: block; font-size: 0.7rem; font-weight: 400; -webkit-text-fill-color: var(--text-dim); color: var(--text-dim); margin-top: 2px; }
+  .sidebar nav a { display: block; padding: 8px 20px; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; transition: all 0.15s; border-left: 2px solid transparent; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: var(--text); background: rgba(255,255,255,0.03); border-left-color: var(--accent2); }
+  .sidebar nav a.active { color: var(--accent2); font-weight: 600; }
+  .content { flex: 1; max-width: 900px; margin: 0 auto; padding: 40px 48px; }
+  h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 24px; }
+  h2 { font-size: 1.4rem; font-weight: 700; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; }
+  p { margin-bottom: 12px; color: var(--text-dim); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); }
+  pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; line-height: 1.5; }
+  pre code { background: none; padding: 0; color: var(--text); }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 12px 0; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+  td { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  ul, ol { margin: 12px 0; padding-left: 20px; color: var(--text-dim); }
+  li { margin-bottom: 6px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--border); }
+  .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border-color: var(--green); }
+  .badge-blue { background: rgba(88,166,255,0.15); color: var(--accent); border-color: var(--accent); }
+  @media (max-width: 768px) { .sidebar { display: none; } .content { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">MxClaw<small>Documentation</small></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="channels.html">Channels</a>
+    <a href="providers.html">Providers</a>
+    <a href="voice.html">Voice</a>
+    <a href="security.html">Security</a>
+    <a href="api.html">API Reference</a>
+    <a class="active" href="development.html">Development</a>
+  </nav>
+</div>
+
+<div class="content">
+
+<h1>Development</h1>
+
+<h2>Monorepo Structure</h2>
+<pre><code>mxclaw/
+├── packages/
+│   ├── core/                  # Types, Zod config schema, utilities
+│   ├── cli/                   # Commander.js CLI entry point
+│   ├── gateway/               # HTTP + WebSocket server, routing engine
+│   ├── plugin-system/         # Plugin loader, registry, manifest discovery
+│   ├── storage/               # JSONL storage (+ SQLite adapter)
+│   ├── security/              # Pairing, allowlists, mention gating
+│   ├── tools/                 # Bash, browser CDP, canvas, cron, image_gen, etc.
+│   ├── logging/               # Subsystem-tagged logging + OTel
+│   ├── voice/                 # OpenAI Realtime, ElevenLabs, Gemini Live, System TTS
+│   ├── skills/                # SKILL.md loader with YAML frontmatter
+│   ├── control-ui/            # React 19 + Vite 6 + Zustand 5 dashboard
+│   ├── channel-*/             # 22 channel plugins
+│   └── provider-*/            # 17 provider plugins
+├── apps/
+│   ├── macos/                 # Swift/SwiftUI macOS menu bar app
+│   ├── ios/                   # SwiftUI iOS app
+│   └── android/               # Jetpack Compose Android app
+├── .github/workflows/         # CI/CD pipelines
+├── Dockerfile                 # Multi-stage production build
+├── docker-compose.yml         # Gateway + Redis + Control UI
+├── pnpm-workspace.yaml        # Workspace definition
+├── tsconfig.base.json         # Shared TypeScript config (composite builds)
+└── package.json               # Root package</code></pre>
+
+<h2>Build Commands</h2>
+<table>
+  <tr><th>Command</th><th>Description</th></tr>
+  <tr><td><code>pnpm build</code></td><td>Build all packages via <code>pnpm -r build</code> (tsc composite builds)</td></tr>
+  <tr><td><code>pnpm dev</code></td><td>Watch mode for all packages</td></tr>
+  <tr><td><code>pnpm clean</code></td><td>Remove all <code>dist/</code> directories</td></tr>
+  <tr><td><code>pnpm test</code></td><td>Run test suite (vitest)</td></tr>
+  <tr><td><code>pnpm test:watch</code></td><td>Watch mode for tests</td></tr>
+  <tr><td><code>pnpm lint</code></td><td>ESLint across packages</td></tr>
+  <tr><td><code>pnpm format</code></td><td>Prettier formatting</td></tr>
+  <tr><td><code>pnpm cli setup</code></td><td>Run the onboarding wizard</td></tr>
+  <tr><td><code>pnpm cli gateway</code></td><td>Start the gateway server</td></tr>
+</table>
+
+<h2>TypeScript Configuration</h2>
+<p>All packages extend <code>tsconfig.base.json</code> which uses:</p>
+<ul>
+  <li><strong>Target:</strong> ES2022</li>
+  <li><strong>Module:</strong> ESNext</li>
+  <li><strong>Resolution:</strong> bundler</li>
+  <li><strong>Strict:</strong> true</li>
+  <li><strong>Composite:</strong> true (incremental builds)</li>
+  <li><strong>verbatimModuleSyntax:</strong> true</li>
+  <li><strong>noUncheckedIndexedAccess:</strong> true</li>
+</ul>
+
+<h2>Testing</h2>
+<p>Tests use <strong>vitest</strong> and are co-located with source files in <code>__tests__/</code> directories. Current test files:</p>
+<table>
+  <tr><th>File</th><th>What It Tests</th></tr>
+  <tr><td><code>packages/core/src/config.test.ts</code></td><td>Config loading, validation, hot-reload, snapshot fallback</td></tr>
+  <tr><td><code>packages/gateway/src/__tests__/</code></td><td>Gateway pipeline, message routing, webhook verification</td></tr>
+  <tr><td><code>packages/storage/src/storage.test.ts</code></td><td>JSONL read/write, session transcript, embeddings</td></tr>
+  <tr><td><code>packages/tools/src/__tests__/</code></td><td>Tool execution, approval gating, web search</td></tr>
+  <tr><td><code>packages/security/src/__tests__/</code></td><td>Pairing codes, device token rotation, allowlists</td></tr>
+  <tr><td><code>packages/skills/src/__tests__/</code></td><td>SKILL.md parsing, YAML frontmatter, trigger matching</td></tr>
+</table>
+
+<p>Run tests:</p>
+<pre><code>pnpm test                    # Run all tests
+pnpm test -- --reporter=verbose  # Verbose output
+pnpm test:watch              # Watch mode</code></pre>
+
+<h2>Adding a New Package</h2>
+<ol>
+  <li>Create <code>packages/&lt;name&gt;/</code> with:
+    <ul>
+      <li><code>package.json</code> — name as <code>@mxclaw/&lt;name&gt;</code></li>
+      <li><code>tsconfig.json</code> — extends <code>../../tsconfig.base.json</code></li>
+      <li><code>manifest.json</code> — for plugin packages (type, capabilities, main)</li>
+      <li><code>src/index.ts</code> — main source file</li>
+    </ul>
+  </li>
+  <li>Add package to the workspace (auto-detected via <code>pnpm-workspace.yaml: packages/*</code>)</li>
+  <li>Run <code>pnpm install</code> to link workspace dependencies</li>
+  <li>If it's a plugin, add it to <code>root package.json exports</code> if it needs public API access</li>
+  <li>Add it to the Dockerfile's COPY steps for production builds</li>
+</ol>
+
+<h2>CI/CD Pipeline</h2>
+<p>GitHub Actions workflows in <code>.github/workflows/</code>:</p>
+
+<h3>CI (<code>ci.yml</code>)</h3>
+<ul>
+  <li>Triggered on push/PR to main branches</li>
+  <li>Runs on ubuntu-latest with Node 22 + pnpm 9</li>
+  <li>Steps: lint → build → test</li>
+</ul>
+
+<h3>Release (<code>release.yml</code>)</h3>
+<ul>
+  <li>Triggered on tag push (v*)</li>
+  <li>Steps: lint → build → test → docker build → docker push → npm publish</li>
+</ul>
+
+<h2>Docker Build</h2>
+<p>The <code>Dockerfile</code> uses a 3-stage build:</p>
+<ol>
+  <li><strong>deps</strong> — Install all dependencies (including devDeps) from frozen lockfile</li>
+  <li><strong>builder</strong> — Build all packages via <code>pnpm -r build</code></li>
+  <li><strong>runner</strong> — Minimal production image with non-root user, exposes port 18700, healthcheck on <code>/health</code></li>
+</ol>
+
+<pre><code>docker build -t mxclaw .
+docker run -p 18700:18700 mxclaw</code></pre>
+
+<p>Or with docker-compose (includes Redis + Control UI nginx):</p>
+<pre><code>docker compose up -d</code></pre>
+
+</div>
+
+</body>
+</html>

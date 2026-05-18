@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Security — MxClaw Docs</title>
+<style>
+  :root { --bg: #0d1117; --surface: #161b22; --surface2: #1c2333; --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --accent2: #f78166; --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff; --pink: #f778ba; --radius: 12px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; display: flex; }
+  .sidebar { width: 260px; min-width: 260px; background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+  .sidebar .logo { padding: 0 20px 20px; font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, var(--accent2), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .sidebar .logo small { display: block; font-size: 0.7rem; font-weight: 400; -webkit-text-fill-color: var(--text-dim); color: var(--text-dim); margin-top: 2px; }
+  .sidebar nav a { display: block; padding: 8px 20px; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; transition: all 0.15s; border-left: 2px solid transparent; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: var(--text); background: rgba(255,255,255,0.03); border-left-color: var(--accent2); }
+  .sidebar nav a.active { color: var(--accent2); font-weight: 600; }
+  .content { flex: 1; max-width: 900px; margin: 0 auto; padding: 40px 48px; }
+  h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 24px; }
+  h2 { font-size: 1.4rem; font-weight: 700; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; }
+  p { margin-bottom: 12px; color: var(--text-dim); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); }
+  pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; line-height: 1.5; }
+  pre code { background: none; padding: 0; color: var(--text); }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 12px 0; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+  td { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  ul, ol { margin: 12px 0; padding-left: 20px; color: var(--text-dim); }
+  li { margin-bottom: 6px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--border); }
+  .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border-color: var(--green); }
+  .badge-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); border-color: var(--yellow); }
+  .badge-blue { background: rgba(88,166,255,0.15); color: var(--accent); border-color: var(--accent); }
+  @media (max-width: 768px) { .sidebar { display: none; } .content { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">MxClaw<small>Documentation</small></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="channels.html">Channels</a>
+    <a href="providers.html">Providers</a>
+    <a href="voice.html">Voice</a>
+    <a class="active" href="security.html">Security</a>
+    <a href="api.html">API Reference</a>
+    <a href="development.html">Development</a>
+  </nav>
+</div>
+
+<div class="content">
+
+<h1>Security</h1>
+
+<h2>Secrets Vault (AES-256-GCM)</h2>
+<p>MxClaw stores API keys and credentials encrypted at rest using <strong>AES-256-GCM</strong>. The vault is a JSON file (<code>~/.mxclaw/.secrets.vault</code>) encrypted with a key derived from the machine ID or a master password.</p>
+
+<pre><code>class SecretsManager {
+  constructor(workspacePath: string, masterPassword?: string);
+  load(): Promise&lt;void&gt;;             // Load vault from disk
+  save(): Promise&lt;void&gt;;             // Save vault to disk (encrypted)
+  set(key: string, value: string): Promise&lt;void&gt;;
+  get(key: string): string | undefined;
+  delete(key: string): Promise&lt;boolean&gt;;
+  listKeys(): string[];
+  has(key: string): boolean;
+  resolve(value: string): string;    // Resolve $secret:KEY references
+}</code></pre>
+
+<p>Vault format: <code>iv:tag:ciphertext</code> (hex-encoded). Use <code>$secret:KEY_NAME</code> in your config to reference vault-stored values:</p>
+<pre><code>{
+  "channels": {
+    "discord-1": {
+      "credentials": { "token": "$secret:DISCORD_BOT_TOKEN" }
+    }
+  }
+}</code></pre>
+
+<h2>Webhook Verification</h2>
+<p>MxClaw verifies incoming webhooks across 8 platforms with timing-safe comparisons. Verifiers are in <code>gateway/src/webhook-verify.ts</code>:</p>
+<table>
+  <tr><th>Platform</th><th>Method</th><th>Security</th></tr>
+  <tr><td>Discord</td><td>Ed25519 signature</td><td>crypto.verify()</td></tr>
+  <tr><td>Slack</td><td>HMAC-SHA256 + timestamp check</td><td>timingSafeEqual, 5min expiry</td></tr>
+  <tr><td>Telegram</td><td>Secret token header</td><td>Constant-time comparison</td></tr>
+  <tr><td>LINE</td><td>HMAC-SHA256 + channel secret</td><td>timingSafeEqual</td></tr>
+  <tr><td>Feishu</td><td>SHA256 of timestamp+nonce+secret+body</td><td>timingSafeEqual</td></tr>
+  <tr><td>Teams</td><td>JWT Bearer token</td><td>payload.serviceUrl check</td></tr>
+  <tr><td>Google Chat</td><td>JWT verification (issuer, audience, expiry)</td><td>iss + aud + exp checks</td></tr>
+  <tr><td>Generic</td><td>HMAC-SHA256</td><td>timingSafeEqual</td></tr>
+</table>
+
+<h2>Rate Limiting</h2>
+<p>Sliding window rate limiting with two classes:</p>
+<ul>
+  <li><strong>Per-IP</strong> — <code>IPRateLimiter</code>: 100 requests per 60s window for HTTP API; returns 429 + <code>Retry-After</code> header</li>
+  <li><strong>Per-WebSocket</strong> — Sliding window: 20 messages per second per client; returns <code>RATE_LIMITED</code> error</li>
+  <li><strong>Per-Channel</strong> — <code>ChannelRateLimiter</code>: Configurable per-channel limits</li>
+</ul>
+
+<h2>Approval Gating</h2>
+<p>Tools support three approval modes (defined in <code>@mxclaw/security</code>):</p>
+<table>
+  <tr><th>Mode</th><th>Description</th></tr>
+  <tr><td><code>yolo</code></td><td>Auto-approve — no confirmation needed</td></tr>
+  <tr><td><code>owner-only</code></td><td>Only the owner (matched by <code>ownerId</code>) can use without approval</td></tr>
+  <tr><td><code>always-require-approval</code></td><td>Every invocation requires manual approval via Control UI or WebSocket</td></tr>
+</table>
+
+<p>Approval requests are managed by <code>ApprovalManager</code> and can be resolved via WebSocket (<code>chat:approve</code>) or HTTP API (<code>POST /api/approval/resolve</code>). Pending approvals are visible on the Control UI Approvals page.</p>
+
+<h2>Device Pairing</h2>
+<ul>
+  <li><strong>Pairing codes</strong> — 8-char hex codes (crypto.randomBytes(4)), 5-minute expiry</li>
+  <li><strong>Device tokens</strong> — 32-byte random tokens (base64url), SHA-256 hashed in memory</li>
+  <li><strong>Token rotation</strong> — Tokens rotate on every WebSocket connect</li>
+  <li><strong>QR codes</strong> — JSON payload: <code>{ type: "mxclaw-pairing", host, port, token, timestamp }</code></li>
+</ul>
+
+<h2>Sandbox Execution</h2>
+<pre><code>interface SandboxConfig {
+  enabled: boolean;
+  type: "docker" | "ssh";
+  image?: string;   // Docker image (default: mxclaw-sandbox:latest)
+  host?: string;
+  port?: number;
+  username?: string;
+}</code></pre>
+<ul>
+  <li><strong>Docker sandbox</strong> — <code>docker run --rm --network none --read-only</code> for untrusted bash commands</li>
+  <li><strong>SSH sandbox</strong> — Remote execution over SSH for isolated environments</li>
+</ul>
+
+<h2>Additional Security</h2>
+<ul>
+  <li><strong>Mention gating</strong> — In group chats, only respond when @mentioned</li>
+  <li><strong>Allowlists</strong> — Per-channel sender allowlists; empty allowlist = pairing mode</li>
+  <li><strong>WebSocket auth timeout</strong> — Must authenticate within 10 seconds or connection is closed</li>
+  <li><strong>Sender ID enforcement</strong> — WebSocket clients cannot impersonate other users</li>
+  <li><strong>API token auth</strong> — Bearer token verification via timing-safe comparison</li>
+  <li><strong>Config secrets resolution</strong> — <code>$secret:KEY</code> refs resolved at load time, never in raw config</li>
+</ul>
+
+</div>
+
+</body>
+</html>

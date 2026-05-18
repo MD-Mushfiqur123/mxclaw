@@ -1,0 +1,32 @@
+{
+  "name": "mxclaw-test-config",
+  "version": "1.0.0",
+  "description": "Test configuration for MxClaw project",
+  "scripts": {
+    "test": "vitest run",
+    "test:unit": "vitest run --unit",
+    "test:integration": "vitest run --integration",
+    "test:e2e": "vitest run --e2e",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest watch",
+    "test:cli": "vitest run --config test/vitest.config.cli.ts",
+    "test:gateway": "vitest run --config test/vitest.config.gateway.ts",
+    "test:channel": "vitest run --config test/vitest.config.channel.ts",
+    "test:voice": "vitest run --config test/vitest.config.voice.ts",
+    "test:skills": "vitest run --config test/vitest.config.skills.ts",
+    "test:storage": "vitest run --config test/vitest.config.storage.ts",
+    "test:setup": "vitest run --config test/vitest.config.setup.ts",
+    "test:architecture": "vitest run --config test/vitest.config.architecture.ts"
+  },
+  "devDependencies": {
+    "vitest": "^1.0.0",
+    "@vitest/coverage-v8": "^1.0.0",
+    "typescript": "^5.0.0",
+    "tsx": "^4.0.0"
+  },
+  "testEnvironments": {
+    "unit": "jsdom",
+    "integration": "node",
+    "e2e": "node"
+  }
+}

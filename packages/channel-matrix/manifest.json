@@ -1,0 +1,9 @@
+{
+  "name": "matrix",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "Matrix channel plugin (Matrix SDK with E2E encryption)",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "rooms", "media"]
+}

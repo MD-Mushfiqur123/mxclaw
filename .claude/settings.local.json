@@ -1,0 +1,9 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(npx skills@latest add mattpocock/skills)",
+      "PowerShell(Get-Command *)",
+      "PowerShell(npm *)"
+    ]
+  }
+}

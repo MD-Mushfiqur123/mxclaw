@@ -1,0 +1,9 @@
+{
+  "name": "whatsapp",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "WhatsApp channel plugin (Baileys WebSocket)",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "media", "groups"]
+}

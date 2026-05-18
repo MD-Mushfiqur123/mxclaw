@@ -1,0 +1,126 @@
+{
+  "name": "mxclaw",
+  "version": "0.1.2",
+  "description": "Local-first personal AI agent gateway — unified inbox & execution engine for 20+ messaging platforms with 18 LLM providers",
+  "keywords": [
+    "ai-agent",
+    "llm-gateway",
+    "chatbot",
+    "discord-bot",
+    "telegram-bot",
+    "slack-bot",
+    "whatsapp-bot",
+    "openai",
+    "anthropic",
+    "claude",
+    "gpt",
+    "gemini",
+    "ollama",
+    "local-ai",
+    "agent-framework",
+    "multi-channel",
+    "messaging",
+    "automation",
+    "mxclaw"
+  ],
+  "homepage": "https://github.com/mxclaw/mxclaw#readme",
+  "bugs": {
+    "url": "https://github.com/mxclaw/mxclaw/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mxclaw/mxclaw.git"
+  },
+  "license": "MIT",
+  "author": "MxClaw",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./packages/core/dist/index.js",
+      "types": "./packages/core/dist/index.d.ts"
+    },
+    "./gateway": {
+      "import": "./packages/gateway/dist/index.js",
+      "types": "./packages/gateway/dist/index.d.ts"
+    },
+    "./cli": {
+      "import": "./packages/cli/dist/index.js"
+    },
+    "./plugin-system": {
+      "import": "./packages/plugin-system/dist/index.js",
+      "types": "./packages/plugin-system/dist/index.d.ts"
+    },
+    "./storage": {
+      "import": "./packages/storage/dist/index.js",
+      "types": "./packages/storage/dist/index.d.ts"
+    },
+    "./security": {
+      "import": "./packages/security/dist/index.js",
+      "types": "./packages/security/dist/index.d.ts"
+    },
+    "./tools": {
+      "import": "./packages/tools/dist/index.js",
+      "types": "./packages/tools/dist/index.d.ts"
+    },
+    "./logging": {
+      "import": "./packages/logging/dist/index.js",
+      "types": "./packages/logging/dist/index.d.ts"
+    },
+    "./voice": {
+      "import": "./packages/voice/dist/index.js",
+      "types": "./packages/voice/dist/index.d.ts"
+    },
+    "./memory": {
+      "import": "./packages/memory/dist/index.js",
+      "types": "./packages/memory/dist/index.d.ts"
+    }
+  },
+  "main": "./packages/core/dist/index.js",
+  "types": "./packages/core/dist/index.d.ts",
+  "bin": {
+    "mxclaw": "dist/cli.mjs"
+  },
+  "files": [
+    "dist/cli.mjs",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "pnpm -r build",
+    "build:bundle": "node scripts/bundle-cli.mjs",
+    "dev": "pnpm -r --parallel dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint packages --ext .ts",
+    "format": "prettier --write 'packages/**/*.ts'",
+    "clean": "pnpm -r clean",
+    "cli": "node packages/cli/dist/index.js",
+    "gateway": "node packages/gateway/dist/index.js",
+    "prepublishOnly": "node scripts/bundle-cli.mjs",
+    "postinstall": "node -e \"console.log('\\n🦞  MxClaw installed! Run: mxclaw onboard\\n')\""
+  },
+  "dependencies": {
+    "commander": "^13.0.0",
+    "uuid": "^11.0.0",
+    "ws": "^8.18.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/uuid": "^10.0.0",
+    "@types/ws": "^8.5.0",
+    "@typescript-eslint/eslint-plugin": "^8.18.0",
+    "@typescript-eslint/parser": "^8.18.0",
+    "esbuild": "^0.28.0",
+    "eslint": "^9.16.0",
+    "prettier": "^3.4.0",
+    "rimraf": "^6.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0",
+    "vitest": "^2.1.0"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "pnpm@9.15.4"
+}

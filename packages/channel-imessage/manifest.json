@@ -1,0 +1,9 @@
+{
+  "name": "imessage",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "iMessage/BlueBubbles channel plugin",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "attachments", "tapbacks"]
+}

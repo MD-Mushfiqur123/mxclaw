@@ -1,0 +1,39 @@
+{
+  "name": "@mxclaw/gateway",
+  "version": "0.1.0",
+  "description": "mxclaw gateway server: HTTP + WebSocket, message routing, session management",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "ws": "^8.18.0",
+    "uuid": "^11.0.0",
+    "@mxclaw/core": "workspace:*",
+    "@mxclaw/plugin-system": "workspace:*",
+    "@mxclaw/logging": "workspace:*",
+    "@mxclaw/skills": "workspace:*",
+    "@mxclaw/security": "workspace:*",
+    "@mxclaw/tools": "workspace:*",
+    "@mxclaw/storage": "workspace:*",
+    "@mxclaw/voice": "workspace:*",
+    "@mxclaw/memory": "workspace:*"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.0",
+    "typescript": "^5.7.0",
+    "@types/ws": "^8.5.0",
+    "@types/uuid": "^10.0.0"
+  }
+}

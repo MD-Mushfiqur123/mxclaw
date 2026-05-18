@@ -1,0 +1,9 @@
+{
+  "name": "teams",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "Microsoft Teams channel plugin",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "adaptiveCards", "teams"]
+}

@@ -1,0 +1,22 @@
+{
+  "name": "@mxclaw/channel-nostr",
+  "version": "0.1.0",
+  "description": "Nostr protocol channel plugin",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@mxclaw/core": "workspace:*",
+    "nostr-tools": "^2.10.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "@mxclaw/channel-whatsapp",
+  "version": "0.1.0",
+  "description": "WhatsApp channel plugin (Baileys WebSocket with QR auth)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@hapi/boom": "^10.0.1",
+    "@mxclaw/core": "workspace:*",
+    "@whiskeysockets/baileys": "^6.17.16",
+    "pino": "^9.14.0",
+    "uuid": "^11.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.0",
+    "typescript": "^5.7.0"
+  }
+}

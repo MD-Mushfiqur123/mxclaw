@@ -1,0 +1,9 @@
+{
+  "name": "googlechat",
+  "version": "0.1.0",
+  "type": "channel",
+  "description": "Google Chat channel plugin",
+  "author": "mxclaw",
+  "main": "dist/index.js",
+  "capabilities": ["sendMessage", "receiveMessage", "cards", "spaces"]
+}

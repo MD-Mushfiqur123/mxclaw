@@ -1,0 +1,24 @@
+{
+  "name": "@mxclaw/channel-matrix",
+  "version": "0.1.0",
+  "description": "Matrix channel plugin (Client-Server API sync with media support)",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": { "import": "./dist/index.js", "types": "./dist/index.d.ts" }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "@mxclaw/core": "workspace:*",
+    "uuid": "^11.0.0"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.0",
+    "typescript": "^5.7.0"
+  }
+}

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Getting Started — MxClaw Docs</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2333;
+    --border: #30363d;
+    --text: #e6edf3;
+    --text-dim: #8b949e;
+    --accent: #58a6ff;
+    --accent2: #f78166;
+    --green: #3fb950;
+    --yellow: #d29922;
+    --red: #f85149;
+    --purple: #bc8cff;
+    --pink: #f778ba;
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    display: flex;
+  }
+  .sidebar {
+    width: 260px; min-width: 260px;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    padding: 24px 0;
+    height: 100vh; position: sticky; top: 0; overflow-y: auto;
+  }
+  .sidebar .logo {
+    padding: 0 20px 20px;
+    font-size: 1.3rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--accent2), var(--pink));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .sidebar .logo small {
+    display: block; font-size: 0.7rem; font-weight: 400;
+    -webkit-text-fill-color: var(--text-dim);
+    color: var(--text-dim); margin-top: 2px;
+  }
+  .sidebar nav a {
+    display: block; padding: 8px 20px;
+    color: var(--text-dim); text-decoration: none;
+    font-size: 0.9rem; transition: all 0.15s;
+    border-left: 2px solid transparent;
+  }
+  .sidebar nav a:hover, .sidebar nav a.active {
+    color: var(--text); background: rgba(255,255,255,0.03);
+    border-left-color: var(--accent2);
+  }
+  .sidebar nav a.active { color: var(--accent2); font-weight: 600; }
+  .content { flex: 1; max-width: 900px; margin: 0 auto; padding: 40px 48px; }
+  h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 24px; }
+  h2 { font-size: 1.4rem; font-weight: 700; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; }
+  p { margin-bottom: 12px; color: var(--text-dim); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code {
+    background: var(--surface2); padding: 2px 6px; border-radius: 4px;
+    font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent);
+  }
+  pre {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px; overflow-x: auto;
+    margin: 12px 0; font-size: 0.85rem;
+    font-family: 'SF Mono', 'Fira Code', monospace; line-height: 1.5;
+  }
+  pre code { background: none; padding: 0; color: var(--text); }
+  table {
+    width: 100%; border-collapse: separate; border-spacing: 0;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    overflow: hidden; margin: 12px 0;
+  }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+  td { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  ul, ol { margin: 12px 0; padding-left: 20px; color: var(--text-dim); }
+  li { margin-bottom: 6px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+  .badge-green { background: rgba(63,185,80,0.15); color: var(--green); }
+  @media (max-width: 768px) { .sidebar { display: none; } .content { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">MxClaw<small>Documentation</small></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a class="active" href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="channels.html">Channels</a>
+    <a href="providers.html">Providers</a>
+    <a href="voice.html">Voice</a>
+    <a href="security.html">Security</a>
+    <a href="api.html">API Reference</a>
+    <a href="development.html">Development</a>
+  </nav>
+</div>
+
+<div class="content">
+
+<h1>Getting Started</h1>
+
+<h2>Prerequisites</h2>
+<ul>
+  <li><strong>Node.js</strong> 22+</li>
+  <li><strong>pnpm</strong> 9.x (9.15.4 recommended)</li>
+  <li><strong>Git</strong> for cloning the repository</li>
+  <li><strong>Docker</strong> (optional, for sandboxed execution)</li>
+</ul>
+
+<p>Enable pnpm via corepack:</p>
+<pre><code>corepack enable
+corepack prepare pnpm@9.15.4 --activate</code></pre>
+
+<h2>Clone &amp; Install</h2>
+<pre><code>git clone &lt;repo-url&gt;
+cd mxclaw
+pnpm install</code></pre>
+<p><code>pnpm install</code> installs dependencies for all packages in the monorepo via the pnpm workspace.</p>
+
+<h2>Build All Packages</h2>
+<pre><code>pnpm build</code></pre>
+<p>This runs <code>tsc</code> for each package (composite builds) and produces <code>dist/</code> directories.</p>
+
+<h2>Configuration</h2>
+<p>MxClaw config lives at <code>~/.mxclaw/mxclaw.json</code>. You can also use <code>.jsonc</code> format for comments. The config schema is defined in <code>@mxclaw/core</code> as a 462-line Zod schema that validates at every load.</p>
+
+<p>Run the interactive setup wizard:</p>
+<pre><code>pnpm cli setup</code></pre>
+<p>The wizard guides you through selecting providers (15 presets) and channels (14 presets), generating your <code>~/.mxclaw/mxclaw.json</code>.</p>
+
+<p>Manual config example (<code>~/.mxclaw/mxclaw.json</code>):</p>
+<pre><code>{
+  "version": 1,
+  "gateway": { "host": "127.0.0.1", "port": 18700 },
+  "agents": {
+    "default": {
+      "id": "default",
+      "name": "Default Agent",
+      "model": { "provider": "openai", "model": "gpt-4o" },
+      "fallbackChain": [
+        { "provider": "anthropic", "model": "claude-sonnet-4-20250514" },
+        { "provider": "groq", "model": "llama-3.3-70b-versatile" }
+      ],
+      "tools": {
+        "bash": { "enabled": true, "approval": "always-require-approval" },
+        "fileRead": { "enabled": true, "approval": "owner-only" }
+      }
+    }
+  },
+  "defaultAgentId": "default",
+  "channels": {
+    "discord-1": {
+      "id": "discord-1",
+      "type": "discord",
+      "enabled": true,
+      "credentials": { "token": "$secret:DISCORD_BOT_TOKEN" }
+    }
+  },
+  "bindings": [
+    { "channelId": "discord-1", "agentId": "default" }
+  ]
+}</code></pre>
+
+<h2>First Run</h2>
+<p>Start the gateway server:</p>
+<pre><code>pnpm cli gateway</code></pre>
+<p>The gateway starts on <code>http://127.0.0.1:18700</code>. Verify with:</p>
+<pre><code>curl http://localhost:18700/health</code></pre>
+
+<h2>Adding Providers</h2>
+<p>Set environment variables or use the secrets vault:</p>
+<pre><code>export OPENAI_API_KEY="sk-..."
+export ANTHROPIC_API_KEY="sk-ant-..."</code></pre>
+<p>Or store secrets in the vault and reference via <code>$secret:KEY_NAME</code> in config.</p>
+
+<h2>Adding Channels</h2>
+<pre><code>pnpm cli channels --add discord</code></pre>
+<p>This prompts for channel-specific credentials (bot token, webhook URL, etc.) and adds an entry to your config.</p>
+
+<h2>Control UI</h2>
+<p>Start the React 19 + Vite 6 dashboard:</p>
+<pre><code>cd packages/control-ui
+pnpm dev</code></pre>
+<p>Opens at <code>http://localhost:5173</code> with 10 pages: Dashboard, Chat, Channels, Sessions, Approvals, Skills, Memory, Providers, Voice, Config.</p>
+
+<h2>CLI Commands</h2>
+<table>
+  <tr><th>Command</th><th>Description</th></tr>
+  <tr><td><code>mxclaw gateway</code></td><td>Start the gateway server</td></tr>
+  <tr><td><code>mxclaw setup</code></td><td>Interactive setup wizard</td></tr>
+  <tr><td><code>mxclaw doctor</code></td><td>Diagnose config and environment</td></tr>
+  <tr><td><code>mxclaw channels --list</code></td><td>List configured channels</td></tr>
+  <tr><td><code>mxclaw channels --add discord</code></td><td>Add a new channel</td></tr>
+  <tr><td><code>mxclaw models --list</code></td><td>List configured agents</td></tr>
+  <tr><td><code>mxclaw sessions --list</code></td><td>List chat sessions</td></tr>
+  <tr><td><code>mxclaw auth --list-devices</code></td><td>List paired devices</td></tr>
+  <tr><td><code>mxclaw config --show</code></td><td>Show current config</td></tr>
+</table>
+
+<h2>Docker</h2>
+<pre><code>docker compose up -d</code></pre>
+<p>Starts gateway (port 18700), Redis (for pub/sub), and optional nginx-served Control UI (port 5173).</p>
+
+</div>
+
+</body>
+</html>

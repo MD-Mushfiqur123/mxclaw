@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Channels — MxClaw Docs</title>
+<style>
+  :root {
+    --bg: #0d1117; --surface: #161b22; --surface2: #1c2333; --border: #30363d;
+    --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --accent2: #f78166;
+    --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff; --pink: #f778ba;
+    --radius: 12px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--bg); color: var(--text); line-height: 1.6; display: flex;
+  }
+  .sidebar { width: 260px; min-width: 260px; background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+  .sidebar .logo { padding: 0 20px 20px; font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, var(--accent2), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .sidebar .logo small { display: block; font-size: 0.7rem; font-weight: 400; -webkit-text-fill-color: var(--text-dim); color: var(--text-dim); margin-top: 2px; }
+  .sidebar nav a { display: block; padding: 8px 20px; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; transition: all 0.15s; border-left: 2px solid transparent; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: var(--text); background: rgba(255,255,255,0.03); border-left-color: var(--accent2); }
+  .sidebar nav a.active { color: var(--accent2); font-weight: 600; }
+  .content { flex: 1; max-width: 900px; margin: 0 auto; padding: 40px 48px; }
+  h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 24px; }
+  h2 { font-size: 1.4rem; font-weight: 700; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; }
+  h4 { font-size: 1rem; font-weight: 600; margin: 16px 0 6px; }
+  p { margin-bottom: 12px; color: var(--text-dim); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); }
+  pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; line-height: 1.5; }
+  pre code { background: none; padding: 0; color: var(--text); }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 12px 0; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+  td { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  ul, ol { margin: 12px 0; padding-left: 20px; color: var(--text-dim); }
+  li { margin-bottom: 6px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--border); }
+  .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border-color: var(--green); }
+  .badge-blue { background: rgba(88,166,255,0.15); color: var(--accent); border-color: var(--accent); }
+  .badge-yellow { background: rgba(210,153,34,0.15); color: var(--yellow); border-color: var(--yellow); }
+  .badge-purple { background: rgba(188,140,255,0.15); color: var(--purple); border-color: var(--purple); }
+  @media (max-width: 768px) { .sidebar { display: none; } .content { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">MxClaw<small>Documentation</small></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a class="active" href="channels.html">Channels</a>
+    <a href="providers.html">Providers</a>
+    <a href="voice.html">Voice</a>
+    <a href="security.html">Security</a>
+    <a href="api.html">API Reference</a>
+    <a href="development.html">Development</a>
+  </nav>
+</div>
+
+<div class="content">
+
+<h1>Channels</h1>
+<p>Channels are the messaging platform adapters that connect MxClaw to the outside world. Each channel plugin implements the <code>ChannelPlugin</code> interface and handles platform-specific authentication, message sending/receiving, and webhook verification.</p>
+
+<h2>All 22 Channels</h2>
+<table>
+  <tr><th>Channel</th><th>Protocol</th><th>Config Fields</th><th>Status</th></tr>
+  <tr>
+    <td><strong>Discord</strong></td>
+    <td>WebSocket Intents</td>
+    <td><code>token</code> (bot token)</td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>Telegram</strong></td>
+    <td>Bot API (polling)</td>
+    <td><code>token</code> (bot token)</td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>Slack</strong></td>
+    <td>Events API + Socket Mode</td>
+    <td><code>token</code>, <code>appToken</code>, <code>signingSecret</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>WhatsApp</strong></td>
+    <td>Baileys WebSocket</td>
+    <td><code>sessionPath</code>, <code>pairingCode</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>Google Chat</strong></td>
+    <td>REST API + Webhooks</td>
+    <td><code>webhookUrl</code>, <code>webhookSecret</code>, <code>projectNumber</code></td>
+    <td><span class="badge badge-blue">JWT verify</span></td>
+  </tr>
+  <tr>
+    <td><strong>Microsoft Teams</strong></td>
+    <td>Bot Framework</td>
+    <td><code>appId</code>, <code>appPassword</code>, <code>serviceUrl</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>LINE</strong></td>
+    <td>Messaging API</td>
+    <td><code>channelSecret</code>, <code>channelAccessToken</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>Feishu / Lark</strong></td>
+    <td>Open API</td>
+    <td><code>appId</code>, <code>appSecret</code>, <code>webhookSecret</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>Matrix</strong></td>
+    <td>Matrix SDK + E2EE</td>
+    <td><code>homeserverUrl</code>, <code>userId</code>, <code>accessToken</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>IRC</strong></td>
+    <td>Raw TCP socket</td>
+    <td><code>server</code>, <code>port</code>, <code>nick</code>, <code>channels</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>Signal</strong></td>
+    <td>signal-cli REST API</td>
+    <td><code>signalCliPath</code>, <code>phoneNumber</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>iMessage</strong></td>
+    <td>BlueBubbles API</td>
+    <td><code>serverUrl</code>, <code>apiKey</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>Mattermost</strong></td>
+    <td>WebSocket API</td>
+    <td><code>serverUrl</code>, <code>token</code>, <code>teamId</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>Nextcloud Talk</strong></td>
+    <td>OCS API</td>
+    <td><code>serverUrl</code>, <code>username</code>, <code>password</code></td>
+    <td><span class="badge badge-green">Stable</span></td>
+  </tr>
+  <tr>
+    <td><strong>Nostr</strong></td>
+    <td>nostr-tools WebSocket</td>
+    <td><code>relays</code>, <code>privateKey</code></td>
+    <td><span class="badge badge-blue">Built</span></td>
+  </tr>
+  <tr>
+    <td><strong>WebChat</strong></td>
+    <td>WebSocket server</td>
+    <td><code>path</code>, <code>secret</code></td>
+    <td><span class="badge badge-blue">Built</span></td>
+  </tr>
+  <tr>
+    <td><strong>Twitch</strong></td>
+    <td>IRC</td>
+    <td><code>username</code>, <code>oauthToken</code>, <code>channels</code></td>
+    <td><span class="badge badge-blue">Built</span></td>
+  </tr>
+  <tr>
+    <td><strong>WeChat</strong></td>
+    <td>REST polling</td>
+    <td><code>appId</code>, <code>appSecret</code>, <code>token</code></td>
+    <td><span class="badge badge-blue">Built</span></td>
+  </tr>
+  <tr>
+    <td><strong>Synology Chat</strong></td>
+    <td>REST polling</td>
+    <td><code>serverUrl</code>, <code>token</code></td>
+    <td><span class="badge badge-blue">Built</span></td>
+  </tr>
+  <tr>
+    <td><strong>Tlon</strong></td>
+    <td>Urbit SSE/poke</td>
+    <td><code>shipUrl</code>, <code>shipName</code>, <code>code</code></td>
+    <td><span class="badge badge-blue">Built</span></td>
+  </tr>
+  <tr>
+    <td><strong>Zalo</strong></td>
+    <td>REST OAuth2</td>
+    <td><code>appId</code>, <code>appSecret</code>, <code>accessToken</code></td>
+    <td><span class="badge badge-blue">Built</span></td>
+  </tr>
+  <tr>
+    <td><strong>QQ</strong></td>
+    <td>OneBot v11 WebSocket</td>
+    <td><code>wsUrl</code>, <code>token</code>, <code>botQQ</code></td>
+    <td><span class="badge badge-blue">Built</span></td>
+  </tr>
+</table>
+
+<h2>ChannelPlugin Interface</h2>
+<p>Every channel must implement this interface (defined in <code>@mxclaw/core</code>):</p>
+<pre><code>interface ChannelPlugin {
+  manifest: PluginManifest;
+  setupChannel: (config: ChannelConfig) =&gt; Promise&lt;void&gt;;
+  startChannel: (
+    config: ChannelConfig,
+    onMessage: (env: MessageEnvelope) =&gt; Promise&lt;void&gt;
+  ) =&gt; Promise&lt;void&gt;;
+  stopChannel: (channelId: string) =&gt; Promise&lt;void&gt;;
+  sendMessage: (channelId: string, reply: ReplyEnvelope) =&gt; Promise&lt;void&gt;;
+  handleCommand?: (channelId: string, command: string, args: string[]) =&gt; Promise&lt;void&gt;;
+  handleApproval?: (channelId: string, approval: ApprovalRequest) =&gt; Promise&lt;void&gt;;
+  getStatus: (channelId: string) =&gt; Promise&lt;ChannelStatus&gt;;
+}</code></pre>
+
+<h2>Config Fields</h2>
+<pre><code>interface ChannelConfig {
+  id: string;                    // Unique channel instance ID
+  type: string;                  // Channel type (e.g. "discord")
+  enabled: boolean;              // Whether this channel is active
+  credentials: Record&lt;string, unknown&gt;;  // Tokens, secrets, etc.
+  options: Record&lt;string, unknown&gt;;      // Platform-specific options
+  allowlist: string[];           // Allowed sender IDs (empty = pairing)
+  mentionGating: boolean;        // Only respond when @mentioned
+  pairingEnabled: boolean;       // Allow unknown senders to pair
+}</code></pre>
+
+<h2>MessageEnvelope Format</h2>
+<p>All channels normalize inbound messages into this format:</p>
+<pre><code>interface MessageEnvelope {
+  id: string;
+  channel: string;               // Channel instance ID
+  channelType: string;           // e.g. "discord", "telegram"
+  sender: { id, displayName, avatarUrl?, isBot? };
+  conversationId: string;
+  threadId?: string;
+  content: MessageContent[];     // Array of content parts
+  mentions: string[];
+  isGroupMessage: boolean;
+  isMentioned: boolean;
+  timestamp: number;
+  metadata: Record&lt;string, unknown&gt;;
+}</code></pre>
+
+<p>Content types (discriminated union):</p>
+<pre><code>type MessageContent =
+  | { type: "text"; text: string }
+  | { type: "image"; url: string; alt?: string }
+  | { type: "audio"; url: string; transcript?: string }
+  | { type: "video"; url: string }
+  | { type: "file"; url: string; name: string; mimeType?: string }
+  | { type: "location"; lat: number; lng: number; label?: string }
+  | { type: "sticker"; id: string; url?: string }
+  | { type: "reaction"; emoji: string; messageId: string }
+  | { type: "canvas"; json: Record&lt;string, unknown&gt; }</code></pre>
+
+<h2>Adding a New Channel</h2>
+<ol>
+  <li>Create <code>packages/channel-&lt;name&gt;/</code> with <code>package.json</code>, <code>tsconfig.json</code>, <code>manifest.json</code>, and <code>src/index.ts</code>.</li>
+  <li>Implement the <code>ChannelPlugin</code> interface.</li>
+  <li>Add <code>manifest.json</code> with <code>type: "channel"</code> and capabilities list.</li>
+  <li>Add webhook verification in <code>gateway/src/webhook-verify.ts</code> if applicable.</li>
+  <li>Add a CLI preset in the onboarding wizard.</li>
+  <li>Add to model catalog if the channel has special model requirements.</li>
+</ol>
+
+</div>
+
+</body>
+</html>

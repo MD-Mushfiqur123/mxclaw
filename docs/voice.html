@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Voice — MxClaw Docs</title>
+<style>
+  :root { --bg: #0d1117; --surface: #161b22; --surface2: #1c2333; --border: #30363d; --text: #e6edf3; --text-dim: #8b949e; --accent: #58a6ff; --accent2: #f78166; --green: #3fb950; --yellow: #d29922; --red: #f85149; --purple: #bc8cff; --pink: #f778ba; --radius: 12px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; display: flex; }
+  .sidebar { width: 260px; min-width: 260px; background: var(--surface); border-right: 1px solid var(--border); padding: 24px 0; height: 100vh; position: sticky; top: 0; overflow-y: auto; }
+  .sidebar .logo { padding: 0 20px 20px; font-size: 1.3rem; font-weight: 800; background: linear-gradient(135deg, var(--accent2), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; border-bottom: 1px solid var(--border); margin-bottom: 16px; }
+  .sidebar .logo small { display: block; font-size: 0.7rem; font-weight: 400; -webkit-text-fill-color: var(--text-dim); color: var(--text-dim); margin-top: 2px; }
+  .sidebar nav a { display: block; padding: 8px 20px; color: var(--text-dim); text-decoration: none; font-size: 0.9rem; transition: all 0.15s; border-left: 2px solid transparent; }
+  .sidebar nav a:hover, .sidebar nav a.active { color: var(--text); background: rgba(255,255,255,0.03); border-left-color: var(--accent2); }
+  .sidebar nav a.active { color: var(--accent2); font-weight: 600; }
+  .content { flex: 1; max-width: 900px; margin: 0 auto; padding: 40px 48px; }
+  h1 { font-size: 2.2rem; font-weight: 800; margin-bottom: 24px; }
+  h2 { font-size: 1.4rem; font-weight: 700; margin: 32px 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+  h3 { font-size: 1.1rem; font-weight: 600; margin: 24px 0 10px; }
+  p { margin-bottom: 12px; color: var(--text-dim); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; color: var(--accent); }
+  pre { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; overflow-x: auto; margin: 12px 0; font-size: 0.85rem; font-family: 'SF Mono', 'Fira Code', monospace; line-height: 1.5; }
+  pre code { background: none; padding: 0; color: var(--text); }
+  table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; margin: 12px 0; }
+  th { background: var(--surface2); padding: 10px 14px; text-align: left; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--text-dim); border-bottom: 1px solid var(--border); }
+  td { padding: 8px 14px; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  ul, ol { margin: 12px 0; padding-left: 20px; color: var(--text-dim); }
+  li { margin-bottom: 6px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; border: 1px solid var(--border); }
+  .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border-color: var(--green); }
+  .badge-blue { background: rgba(88,166,255,0.15); color: var(--accent); border-color: var(--accent); }
+  @media (max-width: 768px) { .sidebar { display: none; } .content { padding: 24px 20px; } }
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">MxClaw<small>Documentation</small></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="getting-started.html">Getting Started</a>
+    <a href="architecture.html">Architecture</a>
+    <a href="channels.html">Channels</a>
+    <a href="providers.html">Providers</a>
+    <a class="active" href="voice.html">Voice</a>
+    <a href="security.html">Security</a>
+    <a href="api.html">API Reference</a>
+    <a href="development.html">Development</a>
+  </nav>
+</div>
+
+<div class="content">
+
+<h1>Voice</h1>
+<p>MxClaw supports 4 voice providers for both real-time voice conversations and text-to-speech. The voice system is built on the <code>VoicePlugin</code> interface with a centralized <code>VoiceManager</code>.</p>
+
+<h2>Voice Providers</h2>
+
+<table>
+  <tr><th>Provider</th><th>Capabilities</th><th>Connection</th><th>Config Key</th></tr>
+  <tr>
+    <td><strong>OpenAI Realtime</strong></td>
+    <td>Voice input, voice output, streaming</td>
+    <td>WebSocket (<code>wss://api.openai.com/v1/realtime</code>)</td>
+    <td><code>openaiRealtime</code></td>
+  </tr>
+  <tr>
+    <td><strong>ElevenLabs</strong></td>
+    <td>Voice output (TTS), streaming</td>
+    <td>REST API + streaming</td>
+    <td><code>elevenlabs</code></td>
+  </tr>
+  <tr>
+    <td><strong>Gemini Live</strong></td>
+    <td>Voice input, voice output, streaming</td>
+    <td>WebSocket (<code>generativelanguage.googleapis.com/ws</code>)</td>
+    <td><code>geminiLive</code></td>
+  </tr>
+  <tr>
+    <td><strong>System TTS</strong></td>
+    <td>Voice output (platform-native)</td>
+    <td>Platform exec (say/espeak/SAPI)</td>
+    <td><code>systemTts</code></td>
+  </tr>
+</table>
+
+<h2>Configuration</h2>
+<pre><code>{
+  "voice": {
+    "defaultProvider": "system-tts",
+    "openaiRealtime": {
+      "apiKey": "$secret:OPENAI_API_KEY",
+      "model": "gpt-4o-realtime-preview",
+      "voice": "alloy"
+    },
+    "geminiLive": {
+      "apiKey": "$secret:GEMINI_API_KEY",
+      "model": "gemini-2.0-flash-live-001",
+      "voice": "Puck"
+    },
+    "elevenlabs": {
+      "apiKey": "$secret:ELEVENLABS_API_KEY",
+      "voiceId": "21m00Tcm4TlvDq8ikWAM"
+    },
+    "systemTts": {
+      "rate": 1.0,
+      "pitch": 1.0
+    }
+  }
+}</code></pre>
+
+<h2>VoicePlugin Interface</h2>
+<pre><code>interface VoicePlugin {
+  manifest: PluginManifest;
+  initialize: (config: Record&lt;string, unknown&gt;) =&gt; Promise&lt;void&gt;;
+  startSession: () =&gt; Promise&lt;{ sessionId: string }&gt;;
+  sendAudio: (sessionId: string, audio: Buffer) =&gt; Promise&lt;void&gt;;
+  receiveAudio: (sessionId: string) =&gt; AsyncGenerator&lt;Buffer&gt;;
+  stopSession: (sessionId: string) =&gt; Promise&lt;void&gt;;
+}</code></pre>
+
+<h2>VoiceManager API</h2>
+<pre><code>class VoiceManager {
+  register(plugin: VoicePlugin): void;
+  initialize(config: VoiceConfig): Promise&lt;void&gt;;
+  startVoiceSession(provider: string): Promise&lt;string&gt;;  // returns sessionId
+  sendAudio(sessionId: string, audio: Buffer): Promise&lt;void&gt;;
+  receiveAudio(sessionId: string): AsyncGenerator&lt;Buffer&gt;;
+  stopSession(sessionId: string): Promise&lt;void&gt;;
+  getActiveSessions(): string[];
+}</code></pre>
+
+<h2>Text-to-Speech Utility</h2>
+<p>The <code>textToSpeech()</code> function in <code>@mxclaw/voice</code> provides direct TTS without a full session:</p>
+<pre><code>async function textToSpeech(
+  text: string,
+  provider: "elevenlabs" | "openai" | "system-tts",
+  config?: Record&lt;string, unknown&gt;
+): Promise&lt;Buffer&gt;</code></pre>
+
+<p>Platform-native TTS uses:</p>
+<ul>
+  <li><strong>macOS</strong> — <code>say</code> command</li>
+  <li><strong>Linux</strong> — <code>espeak</code></li>
+  <li><strong>Windows</strong> — <code>System.Speech</code> via PowerShell</li>
+</ul>
+
+<h2>Push-to-Talk</h2>
+<p>Voice conversations use the WebSocket protocol:</p>
+<table>
+  <tr><th>Client → Server</th><th>Server → Client</th></tr>
+  <tr><td><code>voice:start</code> — begin session</td><td><code>voice:token</code> — session ID returned</td></tr>
+  <tr><td><code>voice:audio</code> — send audio chunk (base64)</td><td><code>voice:error</code> — error message</td></tr>
+  <tr><td><code>voice:stop</code> — end session</td><td>Audio streamed via <code>receiveAudio</code> generator</td></tr>
+</table>
+
+<p>Per-agent voice config can override the default:</p>
+<pre><code>"agents": {
+  "default": {
+    "voice": {
+      "provider": "elevenlabs",
+      "voiceId": "21m00Tcm4TlvDq8ikWAM",
+      "wakeWord": "hey mxclaw"
+    }
+  }
+}</code></pre>
+
+</div>
+
+</body>
+</html>
