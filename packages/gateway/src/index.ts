@@ -140,6 +140,12 @@ export class MxClawGateway {
       this.voiceManager.register(voice);
       this.logger.debug("gateway", `Registered voice plugin: ${name}`);
     }
+    try {
+      await this.voiceManager.initialize(this.config.voice);
+      this.logger.info("gateway", `Voice manager initialized (${this.config.voice.defaultProvider})`);
+    } catch (err) {
+      this.logger.warn("gateway", `Voice init skipped: ${err instanceof Error ? err.message : err}`);
+    }
 
     // Initialize Context Engine
     this.contextEngine = new ContextEngine(this.logger, getWorkspacePath(this.config));
@@ -203,6 +209,7 @@ export class MxClawGateway {
 
     this.wss?.close();
     this.server?.close();
+    this.rateLimiter.shutdown();
     await this.storage.close();
     this.logger.info("gateway", "Gateway stopped");
   }
