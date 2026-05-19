@@ -85,6 +85,7 @@ const plugin: ProviderPlugin = {
   },
   listModels: async () => {
     const resp = await fetch(`${baseUrl}/models`, { headers: { Authorization: `Bearer ${apiKey}` } });
+    if (!resp.ok) return [];
     const data = (await resp.json()) as { data: Array<{ id: string }> };
     return data.data.map(m => ({ id: m.id, name: m.id }));
   },
