@@ -63,7 +63,7 @@ const plugin: ProviderPlugin = {
     return {
       content,
       toolCalls: toolCalls.length > 0 ? toolCalls : undefined,
-      finishReason: candidate.finishReason === "STOP" ? "stop" : "stop",
+      finishReason: mapFinishReason(candidate.finishReason),
       usage: {
         promptTokens: data.usageMetadata?.promptTokenCount ?? 0,
         completionTokens: data.usageMetadata?.candidatesTokenCount ?? 0,
@@ -201,6 +201,16 @@ function convertToGemini(request: LLMCompletionRequest) {
   }
 
   return { systemInstruction, contents, tools };
+}
+
+function mapFinishReason(geminiReason?: string): string {
+  switch (geminiReason) {
+    case "STOP": return "stop";
+    case "MAX_TOKENS": return "length";
+    case "SAFETY": return "content_filter";
+    case "RECITATION": return "content_filter";
+    default: return "stop";
+  }
 }
 
 export default plugin;
