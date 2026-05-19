@@ -9,7 +9,7 @@ import type {
   StorageAdapter,
 } from "@mxclaw/core";
 import type { MemoryAdapter } from "@mxclaw/memory";
-import { MxClawConfigSchema } from "@mxclaw/core";
+import { MxClawConfigSchema, saveConfig } from "@mxclaw/core";
 import { createPluginRegistry, getChannelPlugin } from "@mxclaw/plugin-system";
 import { IPRateLimiter } from "./rate-limiter.js";
 import { verifyWebhook, type WebhookPlatform } from "./webhook-verify.js";
@@ -251,6 +251,8 @@ async function handleConfig(
       const validated = MxClawConfigSchema.parse({ ...ctx.config, ...parsed });
       // Mutate the gateway's live config reference
       Object.assign(ctx.config, validated);
+      // Persist to disk
+      saveConfig(ctx.config);
       sendJson(res, cors, 200, { ok: true });
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Invalid config";
