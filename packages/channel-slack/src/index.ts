@@ -76,7 +76,7 @@ const plugin: ChannelPlugin = {
     // Slack's max message length is ~40,000 chars but UI truncates at ~3,000
     const chunks = chunkText(textContent, 3000);
     for (const chunk of chunks) {
-      await fetch("https://slack.com/api/chat.postMessage", {
+      const resp = await fetch("https://slack.com/api/chat.postMessage", {
         method: "POST",
         headers: { Authorization: `Bearer ${state.botToken}`, "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -86,6 +86,10 @@ const plugin: ChannelPlugin = {
           unfurl_links: false,
         }),
       });
+      if (!resp.ok) {
+        const errBody = await resp.text();
+        throw new Error(`Slack sendMessage failed (${resp.status}): ${errBody}`);
+      }
     }
   },
 
