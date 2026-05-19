@@ -81,21 +81,29 @@ const plugin: ChannelPlugin = {
       });
       if (!resp.ok) {
         // Retry without markdown if parsing fails
-        await fetch(`https://api.telegram.org/bot${state.token}/sendMessage`, {
+        const retryResp = await fetch(`https://api.telegram.org/bot${state.token}/sendMessage`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ chat_id: reply.conversationId, text: chunk }),
         });
+        if (!retryResp.ok) {
+          const errBody = await retryResp.text();
+          throw new Error(`Telegram sendMessage retry failed (${retryResp.status}): ${errBody}`);
+        }
       }
     }
     // Send images/files
     for (const content of reply.content) {
       if (content.type === "image" && content.url) {
-        await fetch(`https://api.telegram.org/bot${state.token}/sendPhoto`, {
+        const photoResp = await fetch(`https://api.telegram.org/bot${state.token}/sendPhoto`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ chat_id: reply.conversationId, photo: content.url }),
         });
+        if (!photoResp.ok) {
+          const errBody = await photoResp.text();
+          throw new Error(`Telegram sendPhoto failed (${photoResp.status}): ${errBody}`);
+        }
       }
     }
   },
