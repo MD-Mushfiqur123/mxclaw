@@ -203,6 +203,7 @@ export class MxClawGateway {
 
     this.wss?.close();
     this.server?.close();
+    this.rateLimiter.shutdown();
     await this.storage.close();
     this.logger.info("gateway", "Gateway stopped");
   }
